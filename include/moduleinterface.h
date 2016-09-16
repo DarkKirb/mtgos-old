@@ -9,6 +9,8 @@ enum class ModType : int {
     none,
     /// Contains a module for ouputting text
     output_text,
+    /// Contains a module for interrupt handling
+    interrupt,
 };
 //Some typedefs to make the code look cleaner.
 typedef void(**table_type)();

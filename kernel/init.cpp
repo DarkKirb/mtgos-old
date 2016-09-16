@@ -2,6 +2,16 @@
 #include <moduleinterface.h>
 #include <elf.h>
 #include <base/output.hpp>
+#include <interrupts.h>
+//TODO
+void * operator new (size_t, void * p)  { return p ; }
+void * operator new[] (size_t, void * p)  { return p ; }
+void operator delete (void *, void *)  { }
+void operator delete[] (void *, void *) { }
+void operator delete (void *, size_t) {}
+void operator delete[] (void *, size_t) {}
+void operator delete (void *) {}
+void operator delete[] (void *) {}
 #ifdef __LP64__
 #define Elf_Ehdr Elf64_Ehdr
 #define Elf_Phdr Elf64_Phdr
@@ -45,6 +55,7 @@ auto load(Elf_Ehdr* file) -> void(**(*)(void*))() {
   return nullptr;
 }
 MTGos::Base::Output out;
+MTGos::Interrupt intr;
 void adjustVTable(uintptr_t** obj, uintptr_t mod, int vtableSize) {
     mod+=PAGE_SIZE;
     for(int i=0;i<vtableSize;i++) {
@@ -70,7 +81,7 @@ extern "C" void _start(void ** modtable) {
         if(!fptr)
             continue;
         void(**table)()=fptr(&getModule);
-#ifndef __LP64__
+#ifdef ARM
         //Relocate table
         table=(void(**)())((uintptr_t)table+(uintptr_t)modtable[i]+PAGE_SIZE);
 #endif
@@ -94,6 +105,13 @@ extern "C" void _start(void ** modtable) {
                     for(int i=0;i>=0;i++) {
                         out << i << " ";
                     }
+                break; }
+            case ModType::interrupt: {
+                size_t size=((sizeof_type)table[1])();
+                ((spawnAt_type)table[2])((void*)&intr);
+                adjustVTable((uintptr_t**) &intr, (uintptr_t)modtable[i], 2);
+                intr.registerHandler();
+                out << "Initialized interrupts!\n";
                 break; }
             case ModType::none:
             default:

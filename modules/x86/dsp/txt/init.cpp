@@ -50,10 +50,13 @@ private:
 };
 }
 }
-void(*tbl[3])()={(void(*)())&getType,(void(*)())&size_of,(void(*)())&spawnAt};
 table_type getTable() {
+    void(**tbl)()=(void(**)())0x0;
+    tbl[0]=(void(*)())&getType;
+    tbl[1]=(void(*)())&size_of;
+    tbl[2]=(void(*)())&spawnAt;
     doCtors();
-    return (void(**)())&tbl;
+    return (void(**)())0x0;
 }
 auto getType() -> ModType {
     return ModType::output_text;

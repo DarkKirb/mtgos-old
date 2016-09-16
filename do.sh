@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+mkdir mount
 gmake clean
 gmake loader.bin
 gmake -C kernel
@@ -22,4 +23,5 @@ sudo mv mtgos.firm mount/mtgos.firm
 sudo mv *.elf mount
 sudo mv *.neun mount
 sudo umount mount
+rm -rf mount
 echo "Remove SD card!"

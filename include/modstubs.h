@@ -2,6 +2,10 @@ void * operator new (size_t, void * p)  { return p ; }
 void * operator new[] (size_t, void * p)  { return p ; }
 void operator delete (void *, void *)  { }
 void operator delete[] (void *, void *) { }
+void operator delete (void *, size_t) {}
+void operator delete[] (void *, size_t) {}
+void operator delete (void *) {}
+void operator delete[] (void *) {}
 extern "C" void __cxa_pure_virtual()
 {
     // Do nothing or print an error message.

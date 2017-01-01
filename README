@@ -1,4 +1,0 @@
-A few things first:
-This software won't build without crosscompilers at ~/opt and without the tools found at https://github.com/Mtgxyz2/mtgos-tools
-
-Also, the software does not work at all, currently. It randomly decided to break.

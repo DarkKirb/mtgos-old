@@ -1,0 +1,21 @@
+---
+#Generic settings DO NOT TOUCH UNLESS YOU KNoW WHAT YOU'RE DOING!
+arch: i686
+includes:
+    - ../../include #kernel/boot/i686
+    - ../include
+    - include
+
+search_dirs:
+    - kernel/boot/i686
+
+cxxflags: -w -Werror -Wno-unused -Wno-unused-variable -Wno-reorder -g -fPIC -std=gnu++14 -fstack-protector=strong -fno-exceptions -fno-rtti -fno-use-cxa-atexit -fdump-class-hierarchy -ffreestanding -nostdlib
+cflags: -w -Werror -Wno-unused -Wno-unused-variable -Wno-reorder -g -fPIC -std=gnu11 -fstack-protector=strong -ffreestanding -nostdlib
+asflags: -g
+ldflags: -nostdlib -nodefaultlibs -T kernel/i686.ld
+
+#Modify starting here
+modules:
+    
+
+finished: false

@@ -18,19 +18,25 @@
 #define ASM_FILE
 #include <multiboot.h>
 
-.section .text
-jmp _start
+.section .btext
+_start:
+jmp _start2
 .align MULTIBOOT_HEADER_ALIGN
 .int MULTIBOOT_HEADER_MAGIC
+.int 0x7
+.int -(MULTIBOOT_HEADER_MAGIC+0x7)
+.int 0,0,0,0,0
 .int 0
-.int -(MULTIBOOT_HEADER_MAGIC)
+.int 1024, 768, 32
 .align MULTIBOOT_HEADER_ALIGN
 .global _start
 .extern start
-_start:
+.extern platform_init
+_start2:
     mov $kernel_stack, %esp //Initialize Stack
     push %ebx
     push %eax //Push arguments to start()
+    call platform_init
     call start
 
 .section .bss

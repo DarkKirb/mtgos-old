@@ -21,6 +21,7 @@ import argparse
 import fnmatch
 import os
 import shutil
+import random
 def main():
     parser = argparse.ArgumentParser(description="Build MTGos")
     def addBinary(flag, help, dest):
@@ -44,7 +45,10 @@ def main():
             config=yaml.load(f)
     if not config["finished"]:
         raise ValueError("You have to finish your configuration before you can build!")
-
+    buildid=" -DBUILDID="+hex(random.getrandbits(64))
+    config["cflags"]+=buildid
+    config["cxxflags"]+=buildid
+    config["asflags"]+=buildid
     print("Starting build")
     wd=os.getcwd()
     for d in config["search_dirs"]:

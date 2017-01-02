@@ -16,16 +16,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 #define ASM_FILE
-#include <multiboot2.h>
+#include <multiboot.h>
 
 .section .text
-jmp $_start
-.align MULTIBOOT_TAG_ALIGN
-.long MULTIBOOT2_HEADER_MAGIC
-.long MULTIBOOT_ARCHITECTURE_I386
-.long 0x10 //size
-.long -(MULTIBOOT2_HEADER_MAGIC+MULTIBOOT_ARCHITECTURE_I386+0x10)
-
+jmp _start
+.align MULTIBOOT_HEADER_ALIGN
+.int MULTIBOOT_HEADER_MAGIC
+.int 0
+.int -(MULTIBOOT_HEADER_MAGIC)
+.align MULTIBOOT_HEADER_ALIGN
 .global _start
 .extern start
 _start:

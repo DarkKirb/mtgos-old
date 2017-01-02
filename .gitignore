@@ -11,3 +11,4 @@ docs/latex/
 *.class
 *.neun
 config.yaml
+*.iso

@@ -45,12 +45,92 @@ def main():
     if not config["finished"]:
         raise ValueError("You have to finish your configuration before you can build!")
 
+    print("Starting build")
+    wd=os.getcwd()
+    for d in config["search_dirs"]:
+        os.chdir(d)
+        print("Building in "+d)
+        build(config)
+        os.chdir(wd)
+    print("Linking mtgos")
+    link(config,"mtgos.elf", "kernel")
+    print("Creating ISO")
+    shutil.copy("mtgos.elf","iso")
+    os.system("grub-mkrescue -o bootable.iso iso")
+    print("All done!")
 #Cleans all *.o files
 def clean():
     for root, dirnames, filenames in os.walk('.'):
         for filename in fnmatch.filter(filenames, '*.o'):
             os.remove(os.path.join(root, filename))
+def getCFlags(config):
+    cflags=config["cflags"]
+    for f in config["includes"]:
+        cflags+=" -I"+f
+    return cflags
+def getCXXFlags(config):
+    cflags=config["cxxflags"]
+    for f in config["includes"]:
+        cflags+=" -I"+f
+    return cflags
+def getASFlags(config):
+    cflags=config["asflags"]
+    for f in config["includes"]:
+        cflags+=" -I"+f
+    return cflags
+def build(config):
+    for root, dirnames, filenames in os.walk('.'):
+        for filename in fnmatch.filter(filenames, '*.c'):
+            compileC(config, os.path.join(root, filename))
+        for filename in fnmatch.filter(filenames, '*.cpp'):
+            compileCXX(config, os.path.join(root, filename))
+        for filename in fnmatch.filter(filenames, '*.S'):
+            assemble(config, os.path.join(root, filename))
+def compileC(config, f):
+    cflags=getCFlags(config)
+    try:
+        if os.stat(f).st_mtime < os.stat(f+".o").st_mtime:
+            print(f+" is up to date.")
+            return
+    except:
+        pass
+    print("Compiling C file "+f)
+    if os.system("{prefix}gcc {cflags} -c -o {f}.o {f}".format(prefix=config["prefix"],cflags=cflags,f=f)):
+        raise ValueError("Failed compiling {f} via {prefix}gcc {cflags} -c -o {f}.o {f}".format(prefix=config["prefix"],cflags=cflags,f=f))
 
+def compileCXX(config, f):
+    cxxflags=getCXXFlags(config)
+    try:
+        if os.stat(f).st_mtime < os.stat(f+".o").st_mtime:
+            print(f+" is up to date.")
+            return
+    except:
+        pass
+    print("Compiling C++ file "+f)
+    if os.system("{prefix}g++ {cxxflags} -c -o {f}.o {f}".format(prefix=config["prefix"],cxxflags=cxxflags,f=f)):
+        raise ValueError("Failed compiling {f} via {prefix}g++ {cxxflags} -c -o {f}.o {f}".format(prefix=config["prefix"],cxxflags=cxxflags,f=f))
+
+def assemble(config, f):
+    asflags=getASFlags(config)
+    try:
+        if os.stat(f).st_mtime < os.stat(f+".o").st_mtime:
+            print(f+" is up to date.")
+            return
+    except:
+        pass
+    print("Assembling file "+f)
+    if os.system("{prefix}gcc {asflags} -c -o {f}.o {f}".format(prefix=config["prefix"],asflags=asflags,f=f)):
+        raise ValueError("Failed assembling {f} via {prefix}gcc {asflags} -c -o {f}.o {f}".format(prefix=config["prefix"],asflags=asflags,f=f))
+
+def link(config,f,d):
+    print("Linking "+f)
+    objs=[]
+    for root, dirnames, filenames in os.walk(d):
+        for filename in fnmatch.filter(filenames, '*.o'):
+            objs.append(os.path.join(root, filename))
+    objs=' '.join(objs)
+    if os.system("{prefix}g++ {ldflags} -o {f} {objs} -lgcc".format(prefix=config["prefix"],ldflags=config["ldflags"],f=f,objs=objs)):
+        raise ValueError("Failed linking {f} via {prefix}g++ {ldflags} -o {f} {objs} -lgcc".format(prefix=config["prefix"],ldflags=config["ldflags"],f=f,objs=objs))
 
 if __name__ == "__main__":
     main()

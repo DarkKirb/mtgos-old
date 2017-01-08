@@ -27,7 +27,7 @@ jmp _start2
 .int -(MULTIBOOT_HEADER_MAGIC+0x7)
 .int 0,0,0,0,0
 .int 0
-.int 1024, 768, 32
+.int 1024, 768, 24
 .align MULTIBOOT_HEADER_ALIGN
 .global _start
 .extern start
@@ -38,6 +38,10 @@ _start2:
     push %eax //Push arguments to start()
     call platform_init
     call start
+_stop:
+    cli
+    hlt
+    jmp _stop
 
 .section .bss
 .space 16384

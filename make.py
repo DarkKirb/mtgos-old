@@ -45,10 +45,15 @@ def main():
             config=yaml.load(f)
     if not config["finished"]:
         raise ValueError("You have to finish your configuration before you can build!")
-    buildid=" -DBUILDID="+hex(random.getrandbits(64))
+    buildid=" -DBUILDID="+hex(random.getrandbits(64))+" "
     config["cflags"]+=buildid
     config["cxxflags"]+=buildid
     config["asflags"]+=buildid
+    print("Parsing the kernel config file")
+    flags=getdefs(config)
+    config["cflags"]+=flags
+    config["cxxflags"]+=flags
+    config["asflags"]+=flags
     print("Starting build")
     wd=os.getcwd()
     for d in config["search_dirs"]:
@@ -90,6 +95,20 @@ def build(config):
             compileCXX(config, os.path.join(root, filename))
         for filename in fnmatch.filter(filenames, '*.S'):
             assemble(config, os.path.join(root, filename))
+def getdefs(config):
+    def getd(builtin, prefix=""):
+        for n,v in builtin.items():
+            if isinstance(v,dict):
+                yield from getd(v,prefix+n+"_")
+            else:
+                if v:
+                    print("Using flag -D"+prefix+n)
+                    yield prefix+n
+    flags=""
+    for f in getd(config["builtins"]):
+        flags+="-D"+f+" "
+    return flags
+
 def compileC(config, f):
     cflags=getCFlags(config)
     try:

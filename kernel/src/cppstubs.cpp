@@ -21,12 +21,13 @@ void operator delete[] (void *, void *) { }
 #else
 #define STACK_CHK_GUARD ((uintptr_t)BUILDID)
 #endif
-uintptr_t __stack_chk_guard = STACK_CHK_GUARD;
+uintptr_t __stack_chk_guard_val = STACK_CHK_GUARD;
+uintptr_t __stack_chk_guard = (uintptr_t)(&__stack_chk_guard_val);
 extern "C" __attribute__((noreturn))
 void __stack_chk_fail() {
     for(;;); //TODO panic
 }
-//And because we use PIC: 
+//And because we use PIC:
 extern "C" __attribute__ ((visibility ("hidden")))
 void __stack_chk_fail_local()
 {

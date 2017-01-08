@@ -24,7 +24,7 @@ auto Serial::operator<<<uint64_t>(uint64_t thing) -> Serial &;
 #define SERIAL drivers::serial::NullSerial
 #else
 #ifdef KPRINT_SERIAL
-#include "../../i686/8250_serial.hpp"
+#include "../../x86/8250_serial.hpp"
 #define SERIAL drivers::serial::PC_Serial
 #endif
 #endif

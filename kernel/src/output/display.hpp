@@ -32,7 +32,7 @@ auto Display::operator<<<uint64_t>(uint64_t thing) -> Display &;
 #define DISPLAY drivers::display::NullDisplay
 #else
 #ifdef DISPLAY_VESA
-#include "../../i686/vesa_fb.hpp"
+#include "../../x86/vesa_fb.hpp"
 #define DISPLAY drivers::display::VESA_Framebuffer
 #endif
 #endif

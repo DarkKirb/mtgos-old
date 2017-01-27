@@ -12,7 +12,7 @@ _PMM::_PMM(multiboot_info_t* mb_info): MTGos::PMM(mb_info) {
         bitmap[i]=0;
     multiboot_mmap_entry* mmap=(multiboot_mmap_entry*)((uintptr_t)mb_info->mmap_addr);
     //First, free all free memory
-    for(uint32_t i=0;i<mb_info->mmap_length;i++) {
+    for(uint32_t i=0;i<(mb_info->mmap_length/sizeof(multiboot_mmap_entry));i++) {
         if(mmap[i].type==MULTIBOOT_MEMORY_AVAILABLE)
             free((void*)((uintptr_t*)mmap[i].addr),mmap[i].len);
     }

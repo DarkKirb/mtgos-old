@@ -27,5 +27,7 @@ builtins:
         NONE: false
         SERIAL: true
         DISPLAY: false
+    PMM:
+        STANDARD: true
 
 finished: false

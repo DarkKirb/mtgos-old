@@ -67,3 +67,12 @@
 #define __UINTPTR_MAX__ __UNATIVE_MAX__
 typedef unsigned __NATIVE_TYPE__ size_t;
 #include <stdint-gcc.h>
+#if __x86_64__
+#define PHYS_BITS 39
+#define VIRT_BITS 48
+#define PAGE_SIZE 2097152
+#else
+#define PHYS_BITS 32
+#define VIRT_BITS 32
+#define PAGE_SIZE 4096
+#endif

@@ -2,6 +2,7 @@
 #include <multiboot.h>
 #include "output/display.hpp"
 #include "output/serial.hpp"
+#include "pmm.hpp"
 extern "C" void(*start_ctors)();
 extern "C" void(*end_ctors)();
 extern "C" void(*start_dtors)();
@@ -16,8 +17,9 @@ static inline uint8_t inb(uint16_t port) {
 	return ret;
 }
 multiboot_info_t* mb_info;
-extern DISPLAY out(mb_info);
-extern SERIAL kout(mb_info);
+DISPLAY out(mb_info);
+SERIAL kout(mb_info);
+PMMD pmm(mb_info);
 
 extern "C" void start(int eax, multiboot_info_t* ebx)
 {
@@ -30,6 +32,7 @@ extern "C" void start(int eax, multiboot_info_t* ebx)
         for(;;);
     }
     kout << MTGos::LogLevel::INFO << "Loaded by: " << (char*)ebx->boot_loader_name << "\n";
+	out << (uint64_t)((uintptr_t) pmm.alloc(100)) << "\n";
     for(auto dtor=&start_dtors;dtor!=&end_dtors;dtor++)
         (**dtor)();
     for(int x=1;x>0;x++);

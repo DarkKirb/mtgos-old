@@ -26,5 +26,6 @@ builtins:
     KPRINT:
         NONE: false
         SERIAL: true
+        DISPLAY: false
 
 finished: false

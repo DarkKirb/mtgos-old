@@ -1,9 +1,13 @@
 #include "serial.hpp"
 namespace MTGos {
-Serial::Serial(multiboot_info_t* mb_info): mb_info(mb_info) {}
+Serial::Serial(multiboot_info_t* mb_info): mb_info(mb_info), level(LogLevel::INFO)  {}
 Serial::~Serial() {}
 template <>
 auto Serial::operator<<<uint64_t>(uint64_t i) -> Serial & {
+    if((int)lvl < (int)level) {
+        return *this;
+    }
+
     //base is 16
     uint64_t output=i;
     const char* chars="0123456789ABCDEF";
@@ -15,6 +19,28 @@ auto Serial::operator<<<uint64_t>(uint64_t i) -> Serial & {
         output>>=4;
     } while(output && (ptr!=buf));
     puts(ptr+1);
+    return *this;
+}
+template<>
+auto Serial::operator<<<LogLevel>(LogLevel i) -> Serial & {
+    lvl=i;
+    switch(lvl) {
+        case LogLevel::DEBUG:
+            puts("DEBUG:");
+            break;
+        case LogLevel::INFO:
+            puts("INFO:");
+            break;
+        case LogLevel::WARNING:
+            puts("WARNING:");
+            break;
+        case LogLevel::ERROR:
+            puts("ERROR!");
+            break;
+        case LogLevel::CRITICAL:
+            puts("CRITICAL!!!!");
+            break;
+    }
     return *this;
 }
 auto Serial::puts(const char * str) -> void {

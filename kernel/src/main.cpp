@@ -16,20 +16,20 @@ static inline uint8_t inb(uint16_t port) {
 	return ret;
 }
 multiboot_info_t* mb_info;
-SERIAL kout(mb_info);
-DISPLAY out(mb_info);
+extern DISPLAY out(mb_info);
+extern SERIAL kout(mb_info);
+
 extern "C" void start(int eax, multiboot_info_t* ebx)
 {
 	mb_info=ebx;
     for(auto ctor=&start_ctors;ctor<&end_ctors;ctor++)
         (**ctor)();
-    kout << "MTGos is starting\nBootloader magic: 0x" << (uint64_t)eax << "\n";
+    kout << MTGos::LogLevel::INFO << "MTGos is starting\n"<< MTGos::LogLevel::INFO<<"Bootloader magic: 0x" << (uint64_t)eax << "\n";
     if(eax!=MULTIBOOT_BOOTLOADER_MAGIC) {
-        kout << "Not loaded by Multiboot conformant loader. Halting.\n";
+        kout << MTGos::LogLevel::CRITICAL << "Not loaded by Multiboot conformant loader. Halting.\n";
         for(;;);
     }
-    kout << "Loaded by: " << (char*)ebx->boot_loader_name << "\n";
-	out << "TEST. lalalalaala\ntwo lines!\n";
+    kout << MTGos::LogLevel::INFO << "Loaded by: " << (char*)ebx->boot_loader_name << "\n";
     for(auto dtor=&start_dtors;dtor!=&end_dtors;dtor++)
         (**dtor)();
     for(int x=1;x>0;x++);

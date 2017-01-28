@@ -4,9 +4,10 @@ install:
     - wget https://transfer.sh/2wk8V/crosscompiler.tar.xz
     - tar -xf crosscompiler.tar.xz
     - cd -
-    - sudo apt-get install grub2 grub2-common
+    - sudo apt-get install grub2 grub2-common python3.4
     - wget https://bootstrap.pypa.io/get-pip.py
-    - sudo pip install yaml
+    - sudo python3.4 get-pip.py
+    - sudo python3.4 -m pip install yaml
 python:
     - "3.4"
 before_install:
@@ -22,22 +23,22 @@ script:
     - echo "Building for i686"
     - cp templates/i686.yaml config.yaml
     - sed -i 's/finished. false/finished. true/' config.yaml
-    - ./make.py --clean
+    - python3.4 ./make.py --clean
     - cp bootloader/3ds/arm9loaderhax_si.bin mtgos-builds/arm9loaderhax_si.bin
     - mv bootable.iso mtgos-builds/i686.iso
     - echo "Building for x86_64"
     - cp templates/x86_64.yaml config.yaml
     - sed -i 's/finished. false/finished. true/' config.yaml
-    - ./make.py --clean
+    - python3.4  ./make.py --clean
     - mv bootable.iso mtgos-builds/x86_64.iso
     - echo "Building for 3DS"
     - cp templates/3ds9.yaml config.yaml
     - sed -i 's/finished. false/finished. true/' config.yaml
-    - ./make.py --clean
+    - python3.4  ./make.py --clean
     - mv mtgos.elf mtgos-builds/kernel9.elf
     - cp templates/3ds11.yaml config.yaml
     - sed -i 's/finished. false/finished. true/' config.yaml
-    - ./make.py --clean
+    - python3.4 ./make.py --clean
     - mv mtgos.elf mtgos-builds/kernel11.elf
 after_success:
     - cd mtgos-builds

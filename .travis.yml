@@ -1,4 +1,4 @@
-language: cpp
+language: python
 install:
     - cd ..
     - wget https://transfer.sh/2wk8V/crosscompiler.tar.xz

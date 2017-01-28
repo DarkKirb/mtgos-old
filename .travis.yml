@@ -9,7 +9,7 @@ install:
     - sudo apt-get install grub2 grub2-common python3.4
     - wget https://bootstrap.pypa.io/get-pip.py
     - sudo python3.4 get-pip.py
-    - sudo python3.4 -m pip install yaml
+    - python3.4 -m pip install --user yaml
 python:
     - "3.4"
 before_install:

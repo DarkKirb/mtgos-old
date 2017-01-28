@@ -7,7 +7,7 @@ SECTIONS
         *(.btext)
         *(.text)
     }
-    .data ALIGN(0x200000) : {
+    .data : {
         start_ctors = .;
             KEEP(*( .init_array ));
             KEEP(*(SORT_BY_INIT_PRIORITY( .init_array.* )));
@@ -18,10 +18,10 @@ SECTIONS
         end_dtors = .;
         *(.data)
     }
-    .rodata ALIGN(0x200000) : {
+    .rodata : {
         *(.rodata)
     }
-    .bss ALIGN(0x200000) : {
+    .bss : {
         *(.bss)
     }
     . = ALIGN(0x200000);

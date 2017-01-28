@@ -1,0 +1,32 @@
+---
+#Generic settings DO NOT TOUCH UNLESS YOU KNoW WHAT YOU'RE DOING!
+arch: 3ds11
+includes:
+    - ../../include #kernel/boot/i686
+    - ../include
+    - include
+
+search_dirs:
+    - kernel/boot/3ds11
+    - kernel/src
+    - kernel/3ds
+
+cxxflags: -w -Werror -Wno-unused -Wno-unused-variable -Wno-reorder -g -fPIC -std=gnu++14 -fstack-protector-strong -fno-exceptions -fno-rtti -fno-use-cxa-atexit -fdump-class-hierarchy -ffreestanding -nostdlib -D_3DS11 -mcpu=mpcore -mlittle-endian -march=armv6k -mtune=mpcore -mfloat-abi=hard -mfpu=vfp
+cflags: -w -Werror -Wno-unused -Wno-unused-variable  -g -fPIC -std=gnu11 -fstack-protector-strong -ffreestanding -nostdlib -D_3DS11 -mcpu=mpcore -mlittle-endian -march=armv6k -mtune=mpcore -mfloat-abi=hard -mfpu=vfp
+asflags: -g
+ldflags: -nostdlib -nodefaultlibs -T kernel/3ds11.ld
+prefix: arm-none-eabi-
+#Modify starting here
+modules:
+
+builtins:
+    DISPLAY:
+        NONE: false
+        LFB: true
+    KPRINT:
+        NONE: false
+        DISPLAY: true
+    PMM:
+        STANDARD: true
+
+finished: false

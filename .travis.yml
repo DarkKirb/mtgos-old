@@ -4,7 +4,7 @@ install:
     - wget https://transfer.sh/2wk8V/crosscompiler.tar.xz
     - tar -xf crosscompiler.tar.xz
     - cd -
-    - sudo add-apt-repository ppa:fkrull/deadsnakes
+    - yes '' | sudo add-apt-repository ppa:fkrull/deadsnakes
     - sudo apt-get update
     - sudo apt-get install grub2 grub2-common python3.4
     - wget https://bootstrap.pypa.io/get-pip.py

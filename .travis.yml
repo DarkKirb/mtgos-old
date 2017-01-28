@@ -2,7 +2,7 @@ language: cpp
 install:
     - cd ..
     - wget https://transfer.sh/2wk8V/crosscompiler.tar.xz
-    - tar -xvf crosscompiler.tar.xz
+    - tar -xf crosscompiler.tar.xz
     - cd -
     - sudo apt-get install grub2 grub2-common
 
@@ -11,8 +11,9 @@ before_install:
 
 script:
     - eval "$(ssh-agent -s)" #start the ssh agent
-    - chmod 600 id_rsa
-    - ssh-add id_rsa
+    - chmod 600 ci/id_rsa
+    - ssh-add ci/id_rsa
+    - echo "StrictHostKeyChecking no" > ~/.ssh/config
     - git clone ssh://travis@dark32.cf:2222/home/travis/mtgos-builds
     - cd ..
     - export PATH=$HOME/opt/bin:$PATH

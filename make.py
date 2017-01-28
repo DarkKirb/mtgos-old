@@ -99,7 +99,8 @@ def getdefs(config):
     def getd(builtin, prefix=""):
         for n,v in builtin.items():
             if isinstance(v,dict):
-                yield from getd(v,prefix+n+"_")
+                for f in getd(v,prefix+n+"_"):
+                    yield f
             else:
                 if v:
                     print("Using flag -D"+prefix+n)

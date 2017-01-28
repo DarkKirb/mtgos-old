@@ -19,7 +19,15 @@
 #define VIRT_BITS 32
 #define PAGE_SIZE 4096
 #else
+#ifdef _3DS11
+#define SCREEN_WIDTH 50
+#define SCREEN_HEIGHT 30
+#define PHYS_BITS 32
+#define VIRT_BITS 32
+#define PAGE_SIZE 4096
+#else
 #error "Unknown arch!"
+#endif
 #endif
 #endif
 #endif

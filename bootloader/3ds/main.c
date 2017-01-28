@@ -16,6 +16,66 @@
 #include <stdint.h>
 #include <sys/stat.h>
 #include "multiboot.h"
+void arm11main() {
+    //ARM11 owned
+    *((uint32_t*)0x1FFFFFF8)=0;
+    //Filling multiboot info
+    multiboot_info_t mb_info={0};
+    mb_info.flags=MULTIBOOT_INFO_MEM_MAP | MULTIBOOT_INFO_FRAMEBUFFER_INFO | MULTIBOOT_INFO_BOOT_LOADER_NAME;
+    mb_info.mem_lower=0x80000;
+    mb_info.mem_upper=0x8000000;
+    multiboot_memory_map_t mmap[7];
+    mb_info.mmap_length=sizeof(mmap);
+    mb_info.mmap_addr=(uintptr_t)(&mmap);
+    mb_info.boot_loader_name=(uintptr_t)(&"arm9loaderhax");
+    mb_info.framebuffer_addr=0x18300000;
+    mb_info.framebuffer_width=400;
+    mb_info.framebuffer_width=240;
+    mb_info.framebuffer_bpp=24;
+    mb_info.framebuffer_type=MULTIBOOT_FRAMEBUFFER_TYPE_RGB;
+    //Fill mmap
+    mmap[0].size=sizeof(multiboot_memory_map_t);
+    mmap[0].addr=0x10000000;
+    mmap[0].len=0x08000000;
+    mmap[0].type=MULTIBOOT_MEMORY_RESERVED; //IO
+    *((uint32_t*)0x18300000)=0xFFFFFF; //Set to greeen if owned
+    mmap[1].size=sizeof(multiboot_memory_map_t);
+    mmap[1].addr=0x18000000;
+    mmap[1].len=0x00600000;
+    mmap[1].type=MULTIBOOT_MEMORY_RESERVED; //VRAM
+    *((uint32_t*)0x18300006)=0xFFFFFF; //Set to greeen if owned
+    mmap[2].size=sizeof(multiboot_memory_map_t);
+    mmap[2].addr=0x1F000000;
+    mmap[2].len=0x00400000;
+    mmap[2].type=MULTIBOOT_MEMORY_RESERVED; //N3DS VRAM
+    *((uint32_t*)0x1830000C)=0xFFFFFF; //Set to greeen if owned
+    mmap[3].size=sizeof(multiboot_memory_map_t);
+    mmap[3].addr=0x1FF00000;
+    mmap[3].len=0x00080000;
+    mmap[3].type=MULTIBOOT_MEMORY_RESERVED; //DSP memory
+    *((uint32_t*)0x18300012)=0xFFFFFF; //Set to greeen if owned
+    mmap[4].size=sizeof(multiboot_memory_map_t);
+    mmap[4].addr=0x1FF80000;
+    mmap[4].len=0x00080000;
+    mmap[4].type=MULTIBOOT_MEMORY_AVAILABLE; //AXIWRAM
+    *((uint32_t*)0x18300018)=0xFFFFFF; //Set to greeen if owned
+    mmap[5].size=sizeof(multiboot_memory_map_t);
+    mmap[5].addr=0x20000000;
+    mmap[5].len=0x08000000;
+    mmap[5].type=MULTIBOOT_MEMORY_AVAILABLE; //FCRAM
+    *((uint32_t*)0x1830001E)=0xFFFFFF; //Set to greeen if owned
+    mmap[6].size=sizeof(multiboot_memory_map_t);
+    mmap[6].addr=0x28000000;
+    mmap[6].len=0x08000000;
+    mmap[6].type=MULTIBOOT_MEMORY_ACPI_RECLAIMABLE; //N3DS FCRAM
+    *((uint32_t*)0x18300003)=0xFF00FF;
+    while(1) {
+        if(*((uint32_t*)0x1FFFFFF8))
+            break;
+    }
+    *((uint32_t*)0x18300FFF)=0xFFFFFF; //Set to greeen if running
+    (*((void(**)(uint32_t,multiboot_info_t*))0x1FFFFFF8))(0x2BADB002,&mb_info);
+}
 int main()
 {
     *((uint32_t*)0x18300000)=0xFFFFFF;
@@ -102,6 +162,24 @@ int main()
     }
     ctr_load_segments(&header, file);
     fclose(file);
+    printf("Owning ARM11.\n");
+    *((uint32_t*)0x1FFFFFF8)=(uint32_t)(&arm11main);
+    file=fopen("SD:/kernel11.elf","rb");
+    if(file) {
+        Elf32_Ehdr header11;
+        ctr_load_header(&header11, file);
+        if(!ctr_check_elf(&header11)) {
+            *((uint32_t*)0x18300003)=0xFF0000;
+            printf("ERROR! this is not a valid ELF!\n");
+        } else {
+            ctr_load_segments(&header11,file);
+            *((uint32_t*)0x1FFFFFF8)=(uint32_t)(header11.e_entry);
+        }
+        fclose(file);
+
+    } else {
+        *((uint32_t*)0x18300003)=0x0000FF;
+    }
     ((void(*)(uint32_t,multiboot_info_t*))(header.e_entry))(0x2BADB002,&mb_info);
     ctr_system_poweroff();
 	return 0;

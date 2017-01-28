@@ -36,7 +36,7 @@ auto Display::operator<<<uint64_t>(uint64_t thing) -> Display &;
 #define DISPLAY drivers::display::VESA_Framebuffer
 #else
 #ifdef DISPLAY_LFB
-#include "../../3ds9/lfb.hpp"
+#include "../../3ds/lfb.hpp"
 #define DISPLAY drivers::display::LFB
 #endif
 #endif

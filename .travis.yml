@@ -5,6 +5,9 @@ install:
     - tar -xf crosscompiler.tar.xz
     - cd -
     - sudo apt-get install grub2 grub2-common
+    - wget https://bootstrap.pypa.io/get-pip.py
+    - python3 get-pip.py
+    - python3 -m pip install yaml
 
 before_install:
     - openssl aes-256-cbc -K $encrypted_43d224ccb4ae_key -iv $encrypted_43d224ccb4ae_iv -in id_rsa.enc -out ci/id_rsa -d

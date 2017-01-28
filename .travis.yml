@@ -15,7 +15,6 @@ script:
     - ssh-add ci/id_rsa
     - echo "StrictHostKeyChecking no" > ~/.ssh/config
     - git clone ssh://travis@dark32.cf:2222/home/travis/mtgos-builds
-    - cd ..
     - export PATH=$HOME/opt/bin:$PATH
     - echo "Building for i686"
     - cp templates/i686 config.yaml

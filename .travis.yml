@@ -1,6 +1,6 @@
 language: python
 install:
-    - cd ..
+    - cd ~
     - wget https://transfer.sh/2wk8V/crosscompiler.tar.xz
     - tar -xf crosscompiler.tar.xz
     - cd -

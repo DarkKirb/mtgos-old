@@ -1,5 +1,6 @@
 #include "display.hpp"
 #include "font.hpp"
+#include <defines.h>
 namespace MTGos {
 
 Display::Display(multiboot_info_t* mb_info): mb_info(mb_info), x(0),y(0) {}

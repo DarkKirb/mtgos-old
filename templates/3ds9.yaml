@@ -1,0 +1,32 @@
+---
+#Generic settings DO NOT TOUCH UNLESS YOU KNoW WHAT YOU'RE DOING!
+arch: 3ds9
+includes:
+    - ../../include #kernel/boot/i686
+    - ../include
+    - include
+
+search_dirs:
+    - kernel/boot/3ds9
+    - kernel/src
+    - kernel/3ds9
+
+cxxflags: -w -Werror -Wno-unused -Wno-unused-variable -Wno-reorder -g -fPIC -std=gnu++14 -fstack-protector-strong -fno-exceptions -fno-rtti -fno-use-cxa-atexit -fdump-class-hierarchy -ffreestanding -nostdlib -D_3DS9 -mcpu=arm946e-s -march=armv5te
+cflags: -w -Werror -Wno-unused -Wno-unused-variable  -g -fPIC -std=gnu11 -fstack-protector-strong -ffreestanding -nostdlib -D_3DS9 -mcpu=arm946e-s -march=armv5te
+asflags: -g
+ldflags: -nostdlib -nodefaultlibs -T kernel/3ds9.ld
+prefix: arm-none-eabi-
+#Modify starting here
+modules:
+
+builtins:
+    DISPLAY:
+        NONE: false
+        LFB: true
+    KPRINT:
+        NONE: false
+        DISPLAY: true
+    PMM:
+        STANDARD: true
+
+finished: false

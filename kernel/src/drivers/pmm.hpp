@@ -3,6 +3,7 @@
 #pragma once
 #include "../pmm.hpp"
 #include <stdint.h>
+#include <defines.h>
 #define MAX_PHYS (1ull<<PHYS_BITS)
 #define NO_PAGES (MAX_PHYS/PAGE_SIZE)
 #define NO_ENTRIES (NO_PAGES/32)

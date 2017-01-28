@@ -28,6 +28,7 @@ def main():
         parser.add_argument(flag, help=help, dest=dest, action="store_const", const=True, default=False)
     addBinary("--clean", "clean all temporary files", "clean")
     addBinary("--reset", "reset configuration","reset")
+    addBinary("--ci", "force build","ci")
     parser.add_argument("--set-arch", help="Clean all files and copy the template", dest="archcopy")
     args=parser.parse_args()
     print(args)
@@ -43,7 +44,7 @@ def main():
         shutil.copy("./templates/{arch}.yaml".format(arch=config["arch"]),"./config.yaml")
         with open("config.yaml") as f:
             config=yaml.load(f)
-    if not config["finished"]:
+    if not config["finished"] and not config.ci:
         raise ValueError("You have to finish your configuration before you can build!")
     buildid=" -DBUILDID="+hex(random.getrandbits(64))+" "
     config["cflags"]+=buildid

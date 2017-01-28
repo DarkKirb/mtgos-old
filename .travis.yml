@@ -24,22 +24,22 @@ script:
     - export PATH=$HOME/opt/bin:$PATH
     - echo "Building for i686"
     - cp templates/i686.yaml config.yaml
-    - sed -i 's/finished(.) false/finished\1 true/' config.yaml
+    - sed -i 's/(?<=finished.).*/ true/' config.yaml
     - python3.4 ./make.py --clean
     - cp bootloader/3ds/arm9loaderhax_si.bin mtgos-builds/arm9loaderhax_si.bin
     - mv bootable.iso mtgos-builds/i686.iso
     - echo "Building for x86_64"
     - cp templates/x86_64.yaml config.yaml
-    - sed -i 's/finished(.) false/finished\1 true/' config.yaml
+    - sed -i 's/(?<=finished.).*/ true/' config.yaml
     - python3.4  ./make.py --clean
     - mv bootable.iso mtgos-builds/x86_64.iso
     - echo "Building for 3DS"
     - cp templates/3ds9.yaml config.yaml
-    - sed -i 's/finished(.) false/finished\1 true/' config.yaml
+    - sed -i 's/(?<=finished.).*/ true/' config.yaml
     - python3.4  ./make.py --clean
     - mv mtgos.elf mtgos-builds/kernel9.elf
     - cp templates/3ds11.yaml config.yaml
-    - sed -i 's/finished(.) false/finished\1 true/' config.yaml
+    - sed -i 's/(?<=finished.).*/ true/' config.yaml
     - python3.4 ./make.py --clean
     - mv mtgos.elf mtgos-builds/kernel11.elf
 after_success:

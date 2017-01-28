@@ -44,7 +44,7 @@ def main():
         shutil.copy("./templates/{arch}.yaml".format(arch=config["arch"]),"./config.yaml")
         with open("config.yaml") as f:
             config=yaml.load(f)
-    if not config["finished"] and not config.ci:
+    if not config["finished"] and not args.ci:
         raise ValueError("You have to finish your configuration before you can build!")
     buildid=" -DBUILDID="+hex(random.getrandbits(64))+" "
     config["cflags"]+=buildid

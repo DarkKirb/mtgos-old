@@ -48,6 +48,8 @@ auto _PMM::markUsed(void* ptr) -> bool {
 auto _PMM::free(void* ptr, uint64_t size) -> void {
     if((uintptr_t)ptr >= MAX_PHYS)
         return;
+    last=(uintptr_t)ptr;
+    last-=PAGE_SIZE;
     uint64_t pages = (size+PAGE_SIZE-1)/PAGE_SIZE;
     for(uintptr_t i=0,p = ((uintptr_t)ptr)&(~(PAGE_SIZE-1));i<pages;i++,p+=PAGE_SIZE) {
         //kout << MTGos::LogLevel::INFO << (uint64_t)p << "\n";
@@ -60,13 +62,14 @@ auto _PMM::free(void* ptr, uint64_t size) -> void {
     }
 }
 auto _PMM::alloc(uint64_t size) -> void * {
-    uint64_t pages = (size+PAGE_SIZE-1)/PAGE_SIZE;
+    uint64_t pages = ((size+PAGE_SIZE-1)/PAGE_SIZE)-1;
     uintptr_t l=last;
     for(uintptr_t p=l+PAGE_SIZE;p!=l;p+=PAGE_SIZE) {
         if(p>=MAX_PHYS)
             p=PAGE_SIZE;
-        if(!isFree((void*)p))
+        if(!isFree((void*)p)) {
             continue;
+        }
         //Found a free initial page!
         if(!isFree((void*)(p+pages*PAGE_SIZE))) {
             //But it doesn't fit.
@@ -75,7 +78,7 @@ auto _PMM::alloc(uint64_t size) -> void * {
             continue;
         }
         bool broke=false;
-        for(uintptr_t q=p;q<p+pages*PAGE_SIZE;q+=PAGE_SIZE) {
+        for(uintptr_t q=p;q<=p+pages*PAGE_SIZE;q+=PAGE_SIZE) {
             if(!isFree((void*)q)) {
                 //Not free in the middle.
                 broke=true;
@@ -86,7 +89,7 @@ auto _PMM::alloc(uint64_t size) -> void * {
         if(broke)
             continue;
         //We found one!
-        for(uintptr_t q=p;q<p+pages*PAGE_SIZE;q+=PAGE_SIZE) {
+        for(uintptr_t q=p;q<=p+pages*PAGE_SIZE;q+=PAGE_SIZE) {
             markUsed((void*)q);
         }
         return (void*)p;

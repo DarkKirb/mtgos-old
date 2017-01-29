@@ -1,11 +1,11 @@
-#ifdef I686
+#ifdef X86_64
 #define SCREEN_WIDTH 128
 #define SCREEN_HEIGHT 96
 #define PHYS_BITS 39
 #define VIRT_BITS 48
 #define PAGE_SIZE 2097152
 #else
-#ifdef X86_64
+#ifdef I686
 #define SCREEN_WIDTH 128
 #define SCREEN_HEIGHT 96
 #define PHYS_BITS 32

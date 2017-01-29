@@ -42,13 +42,15 @@ auto Display::clearscr() -> void {
 }
 auto Display::scroll() -> void {
     for(int x=0;x<SCREEN_WIDTH*8;x++) {
-        for(int y=0;y<SCREEN_WIDTH*8-8;y++) {
+        for(int y=0;y<(SCREEN_HEIGHT*8)-8;y++) {
             plot(x,y,getPixel(x,y+8));
         }
-        for(int y=SCREEN_HEIGHT*8-8;y<SCREEN_HEIGHT*8;y++) {
+        for(int y=(SCREEN_HEIGHT*8)-8;y<SCREEN_HEIGHT*8;y++) {
             plot(x,y,0);
         }
     }
+    x=0;
+    y--;
 }
 template <>
 auto Display::operator<<<uint64_t>(uint64_t i) -> Display & {

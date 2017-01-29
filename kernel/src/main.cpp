@@ -32,7 +32,6 @@ extern "C" void start(int eax, multiboot_info_t* ebx)
         for(;;);
     }
     kout << MTGos::LogLevel::INFO << "Loaded by: " << (char*)ebx->boot_loader_name << "\n";
-	out << (uint64_t)((uintptr_t) pmm.alloc(100)) << "\n";
     for(auto dtor=&start_dtors;dtor!=&end_dtors;dtor++)
         (**dtor)();
     for(int x=1;x>0;x++);

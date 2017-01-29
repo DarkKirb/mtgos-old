@@ -4,7 +4,6 @@ SECTIONS
         . = 0x1FF80000;
         kernel_start = .;
         .text : {
-                *(.btext)
                 *(.text)
         }
         .data : {
@@ -26,4 +25,8 @@ SECTIONS
                 *(COMMON)
         }
         kernel_end = .;
+        . = 0x1FFFF000;
+        .text.boot : {
+            *(.text.boot)
+        }
 }

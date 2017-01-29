@@ -13,7 +13,7 @@ search_dirs:
 
 cxxflags: -w -Werror -Wno-unused -Wno-unused-variable -Wno-reorder -g -fPIC -std=gnu++14 -fstack-protector-strong -fno-exceptions -fno-rtti -fno-use-cxa-atexit -fdump-class-hierarchy -ffreestanding -nostdlib -D_3DS9 -mcpu=arm946e-s -march=armv5te -mthumb
 cflags: -w -Werror -Wno-unused -Wno-unused-variable  -g -fPIC -std=gnu11 -fstack-protector-strong -ffreestanding -nostdlib -D_3DS9 -mcpu=arm946e-s -march=armv5te -mthumb
-asflags: -g
+asflags: -g -mcpu=arm946e-s -march=armv5te
 ldflags: -nostdlib -nodefaultlibs -T kernel/3ds9.ld
 prefix: arm-none-eabi-
 #Modify starting here

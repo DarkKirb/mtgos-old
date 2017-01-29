@@ -32,6 +32,11 @@ extern "C" void start(int eax, multiboot_info_t* ebx)
         for(;;);
     }
     kout << MTGos::LogLevel::INFO << "Loaded by: " << (char*)ebx->boot_loader_name << "\n";
+	out << "Triggering interrupt\n";
+#ifdef __arm__
+	asm volatile("SVC #0");
+#endif
+	out << "Am I still there?\n";
     for(auto dtor=&start_dtors;dtor!=&end_dtors;dtor++)
         (**dtor)();
     for(int x=1;x>0;x++);

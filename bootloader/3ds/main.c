@@ -54,8 +54,8 @@ void arm11main() {
 
     mmap[4].size=sizeof(multiboot_memory_map_t);
     mmap[4].addr=0x1FF80000;
-    mmap[4].len=0x00080000;
-    mmap[4].type=MULTIBOOT_MEMORY_AVAILABLE; //AXIWRAM
+    mmap[4].len=0x0007F000;
+    mmap[4].type=MULTIBOOT_MEMORY_AVAILABLE; //AXIWRAM (Except for the vector location)
 
     mmap[5].size=sizeof(multiboot_memory_map_t);
     mmap[5].addr=0x20000000;

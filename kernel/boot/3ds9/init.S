@@ -6,48 +6,52 @@ b _SWI
 b _UND
 b _PREFETCH
 b _DATA
-interruptHandler:
-    bx lr
 _IRQ:
     sub r14,#4
     push {r0-r12,r14}
     mov r0, #0
-    mov r1, sp
-    blx interruptHandler
-    pop {r0-r12,pc}
+    b prepareHandler
 _FIQ:
     sub r14,#4
     push {r0-r12,r14}
     mov r0, #1
-    mov r1, sp
-    blx interruptHandler
-    pop {r0-r12,pc}
+    b prepareHandler
 _SWI:
     push {r0-r12,r14}
     mov r0, #2
-    mov r1, sp
-    blx interruptHandler
-    pop {r0-r12,pc}
+    b prepareHandler
 _UND:
     push {r0-r12,r14}
     mov r0, #3
-    mov r1, sp
-    blx interruptHandler
-    pop {r0-r12,pc}
+    b prepareHandler
 _PREFETCH:
     sub r14,#4
     push {r0-r12,r14}
     mov r0, #4
-    mov r1, sp
-    blx interruptHandler
-    pop {r0-r12,pc}
+    b prepareHandler
 _DATA:
     sub r14,#8
     push {r0-r12,r14}
     mov r0, #5
+    b prepareHandler
+.section .text
+.extern interruptHandler
+prepareHandler:
+    //Push VFP registers
+    //vpush {s0-s31}
+    mrs r2, spsr
+    push {r2}
     mov r1, sp
+    mrs r2, cpsr
+    bic r2, #0x1F
+    orr r2, #0x13
+    msr cpsr, r2 //Enter SVC mode
+    push {r0,r1}
     blx interruptHandler
-    pop {r0-r12,pc}
+    pop {r0,r1}
+    add r1, #4
+    //vldmia r1!, {s0-s31}
+    ldmia r1, {r0-r12,pc}
 .global _start
 .extern start
 .extern n3ds_init

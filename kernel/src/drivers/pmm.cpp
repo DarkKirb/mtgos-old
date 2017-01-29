@@ -5,7 +5,7 @@ extern "C" int kernel_start;
 extern "C" int kernel_end;
 namespace drivers {
 namespace mm {
-_PMM::_PMM(multiboot_info_t* mb_info): MTGos::PMM(mb_info) {
+_PMM::_PMM(multiboot_info_t* mb_info): MTGos::PMM(mb_info), last(0) {
 
     //Mark all memory as used
     for(int i=0;i<NO_ENTRIES;i++)
@@ -42,6 +42,7 @@ auto _PMM::markUsed(void* ptr) -> bool {
     if(!(bitmap[entry]&(1<<bit)))
         return false;
     bitmap[entry] &= ~(1<<bit);
+    last=p;
     return true;
 }
 auto _PMM::free(void* ptr, uint64_t size) -> void {
@@ -60,7 +61,10 @@ auto _PMM::free(void* ptr, uint64_t size) -> void {
 }
 auto _PMM::alloc(uint64_t size) -> void * {
     uint64_t pages = (size+PAGE_SIZE-1)/PAGE_SIZE;
-    for(uintptr_t p=PAGE_SIZE;p&&(p<MAX_PHYS-1);p+=PAGE_SIZE) {
+    uintptr_t l=last;
+    for(uintptr_t p=l+PAGE_SIZE;p!=l;p+=PAGE_SIZE) {
+        if(p>=MAX_PHYS)
+            p=PAGE_SIZE;
         if(!isFree((void*)p))
             continue;
         //Found a free initial page!

@@ -12,6 +12,7 @@ namespace mm {
 class _PMM: public MTGos::PMM {
 private:
     uint32_t bitmap[NO_ENTRIES];
+    uintptr_t last;
 public:
     _PMM(multiboot_info_t* mb_info);
     virtual ~_PMM() {};

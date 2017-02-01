@@ -18,22 +18,6 @@ union vfpfloat {
 #ifdef _3DS11
 struct cpu_state {
     uint32_t spsr;
-    vfpfloat d0;
-    vfpfloat d1;
-    vfpfloat d2;
-    vfpfloat d3;
-    vfpfloat d4;
-    vfpfloat d5;
-    vfpfloat d6;
-    vfpfloat d7;
-    vfpfloat d8;
-    vfpfloat d9;
-    vfpfloat d10;
-    vfpfloat d11;
-    vfpfloat d12;
-    vfpfloat d13;
-    vfpfloat d14;
-    vfpfloat d15;
     uint32_t r0;
     uint32_t r1;
     uint32_t r2;

@@ -1,10 +1,15 @@
 .section .btext
 .arm
 b _IRQ
+nop
 b _FIQ
+nop
 b _SWI
+nop
 b _UND
+nop
 b _PREFETCH
+nop
 b _DATA
 _IRQ:
     sub r14,#4

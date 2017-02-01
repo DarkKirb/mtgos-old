@@ -31,10 +31,15 @@ _DATA:
     ldr pc,=prepareHandler
 .org 0xFA0
 b _IRQ
+nop
 b _FIQ
+nop
 b _SWI
+nop
 b _UND
+nop
 b _PREFETCH
+nop
 b _DATA
 .section .text
 .extern interruptHandler

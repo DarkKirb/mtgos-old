@@ -80,7 +80,13 @@ x86_64_OK:
     bswap %eax
     mov %eax, %cr0 //Activate paging
     lgdt gdtr
-    jmp $0x18, $__start //Jump to 64-bit code!
+    mov $0x30, %ax
+    mov %ax, %ds
+    mov %ax, %es
+    mov %ax, %fs
+    mov %ax, %gs
+    mov %ax, %ss
+    ljmp $0x28, $__start //Jump to 64-bit code!
 .code64
 __start:
     call platform_init
@@ -97,33 +103,67 @@ _stop:
     jmp _stop
 
 .section .data
-gdt:
-//NULL-descriptor
-    .quad 0
-//32-bit code
-    .word 0xFFFF
-    .word 0x0000
-    .byte 0x00
-    .byte 0x98
-    .byte 0xCF
-    .byte 0x00
-//data
-    .word 0xFFFF
-    .word 0x0000
-    .byte 0x00
-    .byte 0x92
-    .byte 0xCF
-    .byte 00
-//64-bit code
-    .int 0
-    .byte 0
-    .byte 0x98
-    .byte 0x20
-    .byte 0
-
 gdtr:
     .word 4 * 8
     .int gdt
+gdt:
+    .quad 0 //NULL
+    //32-bit kernel code
+        .word 0xFFFF
+        .word 0x0000
+        .byte 0x00
+        .byte 0x9A
+        .byte 0xCF
+        .byte 0x00
+    //32-bit kernel code
+        .word 0xFFFF
+        .word 0x0000
+        .byte 0x00
+        .byte 0x92
+        .byte 0xCF
+        .byte 00
+    //32-bit user code
+        .word 0xFFFF
+        .word 0x0000
+        .byte 0x00
+        .byte 0xFA
+        .byte 0xCF
+        .byte 0x00
+    //32-bit user data
+        .word 0xFFFF
+        .word 0x0000
+        .byte 0x00
+        .byte 0xF2
+        .byte 0xCF
+        .byte 00
+    //64-bit kernel code
+        .word 0xFFFF
+        .word 0x0000
+        .byte 0x00
+        .byte 0x9B
+        .byte 0xAF
+        .byte 0x00
+    //64-bit kernel code
+        .word 0xFFFF
+        .word 0x0000
+        .byte 0x00
+        .byte 0x93
+        .byte 0xCF
+        .byte 00
+    //64-bit user code
+        .word 0xFFFF
+        .word 0x0000
+        .byte 0x00
+        .byte 0xFB
+        .byte 0xAF
+        .byte 0x00
+    //64-bit user data
+        .word 0xFFFF
+        .word 0x0000
+        .byte 0x00
+        .byte 0xF3
+        .byte 0xCF
+        .byte 00
 pmfill:
     .int pagedirPT + 0x7
     .int 0

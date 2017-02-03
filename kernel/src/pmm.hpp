@@ -21,5 +21,10 @@ public:
 #ifdef PMM_STACK
 #include "drivers/pmm_stack.hpp"
 #define PMMD drivers::mm::PMMStack
+#else
+#ifdef PMM_SHAREDSTACK
+#include "../3ds/pmm_sharestack.hpp"
+#define PMMD drivers::mm::PMMShareStack
+#endif
 #endif
 #endif

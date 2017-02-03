@@ -28,6 +28,7 @@ builtins:
         DISPLAY: true
     PMM:
         STANDARD: false
-        STACK: true
+        STACK: false
+        SHAREDSTACK: true
 
 finished: false

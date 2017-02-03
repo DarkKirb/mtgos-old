@@ -3,7 +3,11 @@
 #include <defines.h>
 namespace MTGos {
 
-Display::Display(multiboot_info_t* mb_info): mb_info(mb_info), x(0),y(0) {}
+Display::Display(multiboot_info_t* mb_info): mb_info(mb_info), x(0),y(0) {
+    for(int x=0;x<SCREEN_WIDTH;x++)
+        for(int y=0;y<SCREEN_HEIGHT;y++)
+            buffer[x][y]=0;
+}
 Display::~Display() {}
 auto Display::putChar(char c) -> void {
     if(c<0) {
@@ -18,6 +22,7 @@ auto Display::putChar(char c) -> void {
             }
             return;
     }
+    buffer[x][y]=c;
     for(int x=0;x<8;x++) {
         for(int y=0;y<8;y++) {
             plot(this->x*8+x,this->y*8+y,(font[c][y]&(1<<x))?0xFFFFFF:0);
@@ -38,15 +43,25 @@ auto Display::clearscr() -> void {
             plot(x,y,0);
         }
     }
+    for(int x=0;x<SCREEN_WIDTH;x++)
+        for(int y=0;y<SCREEN_HEIGHT;y++)
+            buffer[x][y]=0;
     x=0;y=0;
 }
 auto Display::scroll() -> void {
-    for(int x=0;x<SCREEN_WIDTH*8;x++) {
-        for(int y=0;y<(SCREEN_HEIGHT*8)-8;y++) {
-            plot(x,y,getPixel(x,y+8));
+    for(int x=0;x<SCREEN_WIDTH;x++) {
+        for(int y=0;y<SCREEN_HEIGHT-1;y++) {
+            buffer[x][y]=buffer[x][y+1];
         }
-        for(int y=(SCREEN_HEIGHT*8)-8;y<SCREEN_HEIGHT*8;y++) {
-            plot(x,y,0);
+        buffer[x][SCREEN_HEIGHT-1]=0;
+    }
+    for(int bx=0;bx<SCREEN_WIDTH;bx++) {
+        for(int by=0;by<SCREEN_HEIGHT;by++) {
+            for(int x=0;x<8;x++) {
+                for(int y=0;y<8;y++) {
+                    plot(bx*8+x,by*8+y,(font[buffer[bx][by]][y]&(1<<x))?0xFFFFFF:0);
+                }
+            }
         }
     }
     x=0;

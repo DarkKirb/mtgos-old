@@ -1,6 +1,7 @@
 #pragma once
 #include <stdint.h>
 #include <multiboot.h>
+#include <defines.h>
 namespace MTGos {
 
 class Display {
@@ -19,6 +20,7 @@ public:
     virtual auto plot(int x, int y, uint32_t color) -> void = 0;
     virtual auto getPixel(int x, int y) -> uint32_t =0;
 protected:
+    char buffer[SCREEN_WIDTH][SCREEN_HEIGHT];
     multiboot_info_t* mb_info;
     virtual auto destAddr(int x, int y) -> uint8_t* = 0;
     int x,y;

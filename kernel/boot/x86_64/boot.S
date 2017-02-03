@@ -81,14 +81,14 @@ x86_64_OK:
     mov %eax, %cr0 //Activate paging
     lgdt gdtr
     mov $0x30, %ax
+    ljmp $0x28, $__start //Jump to 64-bit code!
+.code64
+__start:
     mov %ax, %ds
     mov %ax, %es
     mov %ax, %fs
     mov %ax, %gs
     mov %ax, %ss
-    ljmp $0x28, $__start //Jump to 64-bit code!
-.code64
-__start:
     call platform_init
     xor %rax, %rax
     mov $mb_ptr, %rsi
@@ -104,7 +104,7 @@ _stop:
 
 .section .data
 gdtr:
-    .word 4 * 8
+    .word 9 * 8
     .int gdt
 gdt:
     .quad 0 //NULL

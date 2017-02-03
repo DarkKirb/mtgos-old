@@ -2,7 +2,7 @@
 #include <stdint.h>
 void start(int eax, multiboot_info_t* ebx);
 void n3ds_init(int eax, multiboot_info_t* ebx) {
-    if((*((uint32_t*)0x10140FFC))&2==0)
+    if((*((uint32_t*)0x10140FFC))!=7)
         return; //Old 3DS
     //New 3ds. Bit 2 says whether we can use 3x or 2x clock speed.
     *((uint16_t*)0x10141300) = 1;

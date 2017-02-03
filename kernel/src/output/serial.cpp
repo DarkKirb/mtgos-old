@@ -24,6 +24,9 @@ auto Serial::operator<<<uint64_t>(uint64_t i) -> Serial & {
 template<>
 auto Serial::operator<<<LogLevel>(LogLevel i) -> Serial & {
     lvl=i;
+    if((int)lvl < (int)level) {
+        return *this;
+    }
     switch(lvl) {
         case LogLevel::DEBUG:
             puts("DEBUG:");

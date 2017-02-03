@@ -104,7 +104,7 @@ int main()
     mmap[0].size=sizeof(multiboot_memory_map_t);
     mmap[0].addr=0;
     mmap[0].len=0x8000;
-    mmap[0].type=MULTIBOOT_MEMORY_AVAILABLE; //ITCM
+    mmap[0].type=MULTIBOOT_MEMORY_RESERVED; //ITCM
 
     mmap[1].size=sizeof(multiboot_memory_map_t);
     mmap[1].addr=0x08000000;
@@ -149,7 +149,7 @@ int main()
     mmap[9].size=sizeof(multiboot_memory_map_t);
     mmap[9].addr=0xFFF00000;
     mmap[9].len=0x00004000;
-    mmap[9].type=MULTIBOOT_MEMORY_AVAILABLE; //DTCM
+    mmap[9].type=MULTIBOOT_MEMORY_RESERVED; //DTCM
 
     printf("Loading the kernel.\n");
     Elf32_Ehdr header;

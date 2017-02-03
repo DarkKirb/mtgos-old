@@ -53,7 +53,7 @@ _stop:
     jmp _stop
 .section .data
 gdtr:
-    .word 4 * 8
+    .word 9 * 8
     .int gdt
 gdt:
     .quad 0 //NULL

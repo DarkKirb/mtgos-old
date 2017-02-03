@@ -11,8 +11,8 @@ search_dirs:
     - kernel/src
     - kernel/3ds
 
-cxxflags: -w -Werror -Wno-unused -Wno-unused-variable -Wno-reorder -g -std=gnu++14 -fstack-protector-strong -fno-exceptions -fno-rtti -fno-use-cxa-atexit -fdump-class-hierarchy -ffreestanding -nostdlib -D_3DS11 -mcpu=mpcore -mlittle-endian -march=armv6k -mtune=mpcore -mfloat-abi=softfp -mfpu=vfp -mthumb
-cflags: -w -Werror -Wno-unused -Wno-unused-variable  -g -std=gnu11 -fstack-protector-strong -ffreestanding -nostdlib -D_3DS11 -mcpu=mpcore -mlittle-endian -march=armv6k -mtune=mpcore -mfloat-abi=softfp -mfpu=vfp -mthumb
+cxxflags: -w -Werror -Wno-unused -Wno-unused-variable -Wno-reorder -g -std=gnu++14 -fstack-protector-strong -fno-exceptions -fno-rtti -fno-use-cxa-atexit -fdump-class-hierarchy -ffreestanding -nostdlib -D_3DS11 -mcpu=mpcore -mlittle-endian -march=armv6k -mtune=mpcore -mfloat-abi=softfp -mfpu=vfp
+cflags: -w -Werror -Wno-unused -Wno-unused-variable  -g -std=gnu11 -fstack-protector-strong -ffreestanding -nostdlib -D_3DS11 -mcpu=mpcore -mlittle-endian -march=armv6k -mtune=mpcore -mfloat-abi=softfp -mfpu=vfp
 asflags: -g  -march=armv6k -mtune=mpcore -mfloat-abi=softfp -mfpu=vfp
 ldflags: -nostdlib -nodefaultlibs -T kernel/3ds11.ld
 prefix: arm-none-eabi-
@@ -27,6 +27,7 @@ builtins:
         NONE: false
         DISPLAY: true
     PMM:
-        STANDARD: true
+        STANDARD: false
+        STACK: true
 
 finished: false

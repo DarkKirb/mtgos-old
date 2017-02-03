@@ -17,4 +17,9 @@ public:
 #ifdef PMM_STANDARD
 #include "drivers/pmm.hpp"
 #define PMMD drivers::mm::_PMM
+#else
+#ifdef PMM_STACK
+#include "drivers/pmm_stack.hpp"
+#define PMMD drivers::mm::PMMStack
+#endif
 #endif

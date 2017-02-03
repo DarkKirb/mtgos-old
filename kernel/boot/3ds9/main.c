@@ -2,7 +2,7 @@
 #include <stdint.h>
 void start(int eax, multiboot_info_t* ebx);
 void n3ds_init(int eax, multiboot_info_t* ebx) {
-    if((*((uint32_t*)0x10140FFC))&2==0)
+    if((*((uint32_t*)0x10140FFC))&2!=7)
         return; //Old 3DS
     //New 3ds. Activate the 512KiB of ram we additionally get.
     *((uint32_t*)0x10000200) |= 1;

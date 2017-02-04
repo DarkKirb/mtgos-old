@@ -10,10 +10,11 @@ PMMShareStack::PMMShareStack(multiboot_info_t* mb_info): MTGos::PMM(mb_info)
 , a9int(mb_info)
 #endif
   {
-    uintptr_t cmax=0x28000000;
+    uintptr_t cmax=0x20000000-0x1000;
     kout << MTGos::LogLevel::INFO << (uint64_t)cmax << " ";
-    lock=(volatile uintptr_t*)(0x20000000-sizeof(uintptr_t));
-    kout << (uint64_t)((uintptr_t)lock);
+    cmax -= sizeof(uintptr_t);
+    kout << (uint64_t)cmax << " ";
+    lock=(volatile uintptr_t*)(cmax);
     cmax-=sizeof(uintptr_t*);
     kout << (uint64_t)cmax << " ";
     sp=(volatile uintptr_t**)cmax;

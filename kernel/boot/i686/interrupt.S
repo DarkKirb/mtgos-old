@@ -297,7 +297,21 @@ intr_common_handler:
 	add $8, %esp
 	// Exit interrupt
 	iret
-
+.global panic
+.extern panic2
+panic:
+	push %ebp
+	push %edi
+	push %esi
+	push %edx
+	push %ecx
+	push %ebx
+	push %eax
+	mov %esp, %ebx
+	mov 32(%esp), %eax
+	push %eax
+	push %ebx
+    jmp panic2
 .section .data
 fld_lo:
 .space 4

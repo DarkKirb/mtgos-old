@@ -119,8 +119,14 @@ auto PMMShareStack::push(uintptr_t p) -> void {
     kout << MTGos::LogLevel::DEBUG << "Freeing " << (uint64_t)((uintptr_t)p) << "\n";
 }
 auto PMMShareStack::pop() -> uintptr_t {
-    if(!(*head))
+    if(!(*head)) {
+        //We're done here.
+        //Let's be nice to the other almost-dead kernel and unlock
+        kout << MTGos::LogLevel::CRITICAL << "Unlocking, because of upcoming panic()\n";
+        *lock=false;
+        panic("Oops. We just ran out of memory!\n");
         return 0;
+    }
     volatile PMMList *curr=*head;
     *head=curr->next;
     if(curr->next)

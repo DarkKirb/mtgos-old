@@ -68,8 +68,12 @@ auto PMMStack::push(uintptr_t p) -> void {
     kout << MTGos::LogLevel::DEBUG << "Freeing " << (uint64_t)((uintptr_t)p) << "\n";
 }
 auto PMMStack::pop() -> uintptr_t {
-    if(!head)
+    if(!(head)) {
+#ifndef _3DS9
+        panic("Oops. We just ran out of memory!\n");
+#endif
         return 0;
+    }
     PMMList *curr=head;
     head=curr->next;
     if(curr->next)
@@ -86,8 +90,9 @@ auto PMMStack::alloc(uint64_t size) -> void * {
     uint64_t pages = ((size+PAGE_SIZE)/PAGE_SIZE)-1;
     if(!pages)
         pages=1;
-    if(pages==1)
+    if(pages==1) {
         return (void*)(pop());
+    }
     for(uintptr_t i=0;i<=MAX_PHYS;i+=PAGE_SIZE) {
         if(!isFree((void*)i))
             continue;

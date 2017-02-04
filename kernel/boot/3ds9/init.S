@@ -87,7 +87,14 @@ _start:
     blx n3ds_init
     pop {r0,r1}
     blx start
-
+.global panic
+.extern panic2
+panic:
+    push {r0-r12,lr}
+    mrs r2, cpsr
+    push {r2}
+    mov r1, sp
+    b panic2
 .section .bss
 .space 4096
 stack:

@@ -292,7 +292,7 @@ intr_common_handler:
 
 	mov %rsp, %rdi
 	call handleINT
-    mov %rax, %rsi
+    mov %rax, %rsp
 
 	pop %rax
 	pop %rbx
@@ -313,7 +313,27 @@ intr_common_handler:
 	add $16, %rsp
 	// Exit interrupt
 	iretq
-
+.global panic
+.extern panic2
+panic:
+	cli
+	push %r15
+	push %r14
+	push %r13
+	push %r12
+	push %r11
+	push %r10
+	push %r9
+	push %r8
+	push %rbp
+	push %rdi
+	push %rsi
+	push %rdx
+	push %rcx
+	push %rbx
+	push %rax
+	mov %rsp, %rsi
+	jmp panic2
 .section .data
 fld_lo:
 .space 4

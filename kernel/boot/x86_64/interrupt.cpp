@@ -54,3 +54,19 @@ extern "C" cpu_state* handleINT(cpu_state* cpu) {
     }
     return cpu;
 }
+extern "C" void panic2(char* text, cpu_state* cpu) {
+    out << "=== KERNEL PANIC ===\n";
+    out << "MTGos encountered a problem it couldn't resolve\n";
+    out << "Please open a issue at bit.ly/mtgos if you cannot resolve this on your own\n";
+    out << "rax: " << (uint64_t)cpu->rax << ", rbx: " << (uint64_t)cpu->rbx << "\n";
+    out << "rcx: " << (uint64_t)cpu->rcx << ", rdx: " << (uint64_t)cpu->rdx << "\n";
+    out << "rsi: " << (uint64_t)cpu->rsi << ", rdi: " << (uint64_t)cpu->rdi << "\n";
+    out << "rbp: " << (uint64_t)cpu->rbp << ", rip: " << (uint64_t)cpu->intr << "\n";
+    out << "r8: " << (uint64_t)cpu->r8 << ", r9: " << (uint64_t)cpu->r9 << "\n";
+    out << "r10: " << (uint64_t)cpu->r10 << ", r11: " << (uint64_t)cpu->r11 << "\n";
+    out << "r12: " << (uint64_t)cpu->r12 << ", r13: " << (uint64_t)cpu->r13 << "\n";
+    out << "r14: " << (uint64_t)cpu->r14 << ", r15: " << (uint64_t)cpu->r15 << "\n";
+    out << "x86_64-" << (uint64_t) BUILDID << "\n";
+    out << text << "\nHalting...";
+    for(;;);
+}

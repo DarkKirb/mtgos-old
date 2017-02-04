@@ -69,6 +69,8 @@ auto PMMStack::push(uintptr_t p) -> void {
     kout << MTGos::LogLevel::DEBUG << "Freeing " << (uint64_t)((uintptr_t)p) << "\n";
 }
 auto PMMStack::pop() -> uintptr_t {
+    if(!head)
+        return 0;
     PMMList *curr=head;
     head=curr->next;
     if(curr->next)

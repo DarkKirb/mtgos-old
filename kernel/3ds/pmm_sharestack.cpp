@@ -10,6 +10,16 @@ PMMShareStack::PMMShareStack(multiboot_info_t* mb_info): MTGos::PMM(mb_info)
 , a9int(mb_info)
 #endif
   {
+    auto isUsed=[mb_info](uintptr_t addr) -> bool {
+        if(addr == 0)
+            return true;
+        else if(addr == (uintptr_t)mb_info)
+            return true;
+        else if((addr >= (uintptr_t)(&kernel_start)) && (addr < (uintptr_t)(&kernel_end)))
+            return true;
+        else
+            return false;
+    };
     uintptr_t cmax=0x20000000;
     kout << MTGos::LogLevel::INFO << (uint64_t)cmax << " ";
     cmax -= sizeof(uintptr_t);
@@ -23,7 +33,7 @@ PMMShareStack::PMMShareStack(multiboot_info_t* mb_info): MTGos::PMM(mb_info)
     tail=(volatile PMMList**)cmax;
     *head=*tail=nullptr;
 #ifdef _3DS9
-    *lock=false; //First CPU to reach this#
+    *lock=false; //First CPU to reach this
     while(!(*lock));
     while(*lock);
 #else
@@ -33,12 +43,15 @@ PMMShareStack::PMMShareStack(multiboot_info_t* mb_info): MTGos::PMM(mb_info)
     volatile uintptr_t* tlock=lock;
     uintptr_t l=false;
     lock=&l;
-    PMMStack temppmm(mb_info);
-    head=tail=nullptr;
-    for(uintptr_t i=PAGE_SIZE;(i!=0) && i < MAX_PHYS; i += PAGE_SIZE) {
-        if(!temppmm.isFree((void*)i))
-            continue;
-        push(i);
+    multiboot_mmap_entry* mmap=(multiboot_mmap_entry*)((uintptr_t)mb_info->mmap_addr);
+    for(uint32_t i=0;i<(mb_info->mmap_length/sizeof(multiboot_mmap_entry));i++) {
+        if(mmap[i].type==MULTIBOOT_MEMORY_AVAILABLE) {
+            for(uintptr_t p=(uintptr_t)(mmap[i].addr); p<(uintptr_t)(mmap[i].addr+mmap[i].len); p+= PAGE_SIZE) {
+                if(isUsed(p))
+                    continue;
+                push(p); //Mark as free
+            }
+        }
     }
     lock=tlock;
     //Done!
@@ -98,14 +111,17 @@ auto PMMShareStack::push(uintptr_t p) -> void {
         return;
     volatile PMMList *curr=(PMMList*)p;
     curr->last=(PMMList*)(*tail);
+    curr->next=nullptr;
     if(!(*head))
         *head=curr;
-    if(tail)
+    if(*tail)
         (*tail)->next=(PMMList*)curr;
     *tail=curr;
     kout << MTGos::LogLevel::DEBUG << "Freeing " << (uint64_t)((uintptr_t)p) << "\n";
 }
 auto PMMShareStack::pop() -> uintptr_t {
+    if(!(*head))
+        return 0;
     volatile PMMList *curr=*head;
     *head=curr->next;
     if(curr->next)
@@ -119,7 +135,7 @@ auto PMMShareStack::free(void* ptr, uint64_t size) -> void {
             return a9int.free(ptr,size);
         }
     #endif
-    kout << MTGos::LogLevel::INFO << "Waiting for other CPU\n";
+    kout << MTGos::LogLevel::DEBUG << "Waiting for other CPU\n";
     while(*lock);
     if((uintptr_t)ptr >= MAX_PHYS)
         return;
@@ -134,7 +150,7 @@ auto PMMShareStack::alloc(uint64_t size) -> void * {
         if(tptr)
             return tptr;
     #endif
-    kout << MTGos::LogLevel::INFO << "Waiting for other CPU\n";
+    kout << MTGos::LogLevel::DEBUG << "Waiting for other CPU\n";
     while(*lock);
     *lock=true;
     uint64_t pages = ((size+PAGE_SIZE)/PAGE_SIZE)-1;

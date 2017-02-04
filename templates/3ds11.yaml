@@ -27,7 +27,6 @@ builtins:
         NONE: false
         DISPLAY: true
     PMM:
-        STANDARD: false
         STACK: false
         SHAREDSTACK: true
 

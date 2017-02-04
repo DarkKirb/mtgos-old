@@ -28,7 +28,6 @@ builtins:
         SERIAL: true
         DISPLAY: false
     PMM:
-        STANDARD: false
         STACK: true
 
 finished: false

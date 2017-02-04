@@ -30,17 +30,19 @@ private:
 template <>
 auto Display::operator<<<uint64_t>(uint64_t thing) -> Display &;
 }
-
-#ifdef DISPLAY_NONE
 #include "../drivers/display_null.hpp"
+#if defined(X86_64) || defined(I686)
+#include "../../x86/vesa_fb.hpp"
+#elif defined(_3DS9) || defined(_3DS11)
+#include "../../3ds/lfb.hpp"
+#endif
+#ifdef DISPLAY_NONE
 #define DISPLAY drivers::display::NullDisplay
 #else
 #ifdef DISPLAY_VESA
-#include "../../x86/vesa_fb.hpp"
 #define DISPLAY drivers::display::VESA_Framebuffer
 #else
 #ifdef DISPLAY_LFB
-#include "../../3ds/lfb.hpp"
 #define DISPLAY drivers::display::LFB
 #endif
 #endif

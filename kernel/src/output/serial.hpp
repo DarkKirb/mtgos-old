@@ -33,16 +33,18 @@ auto Serial::operator<<<uint64_t>(uint64_t thing) -> Serial &;
 template <>
 auto Serial::operator<<<LogLevel>(LogLevel thing) -> Serial &;
 }
-#ifdef KPRINT_NONE
 #include "../drivers/serial_null.hpp"
+#include "../drivers/serial_to_display.hpp"
+#if defined(X86_64) || defined(I686)
+#include "../../x86/8250_serial.hpp"
+#endif
+#ifdef KPRINT_NONE
 #define SERIAL drivers::serial::NullSerial
 #else
 #ifdef KPRINT_SERIAL
-#include "../../x86/8250_serial.hpp"
 #define SERIAL drivers::serial::PC_Serial
 #else
 #ifdef KPRINT_DISPLAY
-#include "../drivers/serial_to_display.hpp"
 #define SERIAL drivers::serial::DisplaySerial
 #endif
 #endif

@@ -10,6 +10,7 @@ void init_sse() {
                   or $0x06, %ah; \
                   mov %cr4, %eax");
 }
+void loadIDT();
 void platform_init() {
     asm volatile("finit");
     uint32_t eax, ebx, ecx, edx;
@@ -28,6 +29,7 @@ void platform_init() {
         sse41=1;
     if(ecx & bit_SSE4_2)
         sse42=1;
+    loadIDT();
 }
 #define MIN(x,y) ((x)<(y)?(x):(y))
 static const void* memclr_sse2(const void* const m_start, const size_t m_count) {

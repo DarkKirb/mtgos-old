@@ -24,6 +24,8 @@ protected:
     multiboot_info_t* mb_info;
     virtual auto destAddr(int x, int y) -> uint8_t* = 0;
     int x,y;
+private:
+    auto plotChar(int x, int y, char c) -> void;
 };
 template <>
 auto Display::operator<<<uint64_t>(uint64_t thing) -> Display &;

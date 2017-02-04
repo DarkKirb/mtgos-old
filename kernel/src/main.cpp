@@ -38,7 +38,7 @@ extern "C" void start(int eax, multiboot_info_t* ebx)
 #endif
 	out << "Am I still there?\n";
 	while(true) {
-		out << (uint64_t)((uintptr_t)(pmm.alloc(1))) << ",";
+		out << (uint64_t)((uintptr_t)(pmm.alloc(1))) << "\n";
 	}
     for(auto dtor=&start_dtors;dtor!=&end_dtors;dtor++)
         (**dtor)();

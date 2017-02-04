@@ -22,12 +22,7 @@ auto Display::putChar(char c) -> void {
             }
             return;
     }
-    buffer[x][y]=c;
-    for(int x=0;x<8;x++) {
-        for(int y=0;y<8;y++) {
-            plot(this->x*8+x,this->y*8+y,(font[c][y]&(1<<x))?0xFFFFFF:0);
-        }
-    }
+    plotChar(x,y,c);
     x++;
     if(x>=SCREEN_WIDTH) {
         x=0;
@@ -38,31 +33,19 @@ auto Display::putChar(char c) -> void {
     }
 }
 auto Display::clearscr() -> void {
-    for(int x=0;x<SCREEN_WIDTH*8;x++) {
-        for(int y=0;y<SCREEN_HEIGHT*8;y++) {
-            plot(x,y,0);
+    for(int x=0;x<SCREEN_WIDTH;x++) {
+        for(int y=0;y<SCREEN_HEIGHT;y++) {
+            plotChar(x,y,0);
         }
     }
-    for(int x=0;x<SCREEN_WIDTH;x++)
-        for(int y=0;y<SCREEN_HEIGHT;y++)
-            buffer[x][y]=0;
     x=0;y=0;
 }
 auto Display::scroll() -> void {
     for(int x=0;x<SCREEN_WIDTH;x++) {
         for(int y=0;y<SCREEN_HEIGHT-1;y++) {
-            buffer[x][y]=buffer[x][y+1];
+            plotChar(x,y,buffer[x][y+1]);
         }
-        buffer[x][SCREEN_HEIGHT-1]=0;
-    }
-    for(int bx=0;bx<SCREEN_WIDTH;bx++) {
-        for(int by=0;by<SCREEN_HEIGHT;by++) {
-            for(int x=0;x<8;x++) {
-                for(int y=0;y<8;y++) {
-                    plot(bx*8+x,by*8+y,(font[buffer[bx][by]][y]&(1<<x))?0xFFFFFF:0);
-                }
-            }
-        }
+        plotChar(x,SCREEN_HEIGHT-1,0);
     }
     x=0;
     y--;
@@ -86,5 +69,15 @@ auto Display::puts(const char * str) -> void {
     for(int i=0;str[i];i++) {
         putChar(str[i]);
     }
+}
+auto Display::plotChar(int x, int y, char c) -> void {
+    if(buffer[x][y]==c)
+        return;
+    for(int cx=0;cx<8;cx++) {
+        for(int cy=0;cy<8;cy++) {
+            plot(x*8+cx,y*8+cy,(font[c][cy]&(1<<cx))?0xFFFFFF:0);
+        }
+    }
+    buffer[x][y]=c;
 }
 }

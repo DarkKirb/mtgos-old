@@ -22,7 +22,10 @@ PMMShareStack::PMMShareStack(multiboot_info_t* mb_info): MTGos::PMM(mb_info)
     kout << (uint64_t)cmax << "\n";
     max=(volatile uintptr_t**)cmax;
 #ifdef _3DS9
-    *lock=false; //First CPU to reach this
+    *lock=false; //First CPU to reach this#
+    while(!(*lock));
+    *lock=true;
+    while(*lock);
 #else
     kout << MTGos::LogLevel::DEBUG << "Waiting for ARM9\n";
     while(*lock);

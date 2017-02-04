@@ -13,9 +13,9 @@ private:
 #ifdef _3DS9
     PMMStack a9int;
 #endif
-    volatile uintptr_t ** sp;
     volatile uintptr_t * lock;
-    volatile uintptr_t ** max;
+    volatile PMMList **head;
+    volatile PMMList **tail;
     virtual auto push(uintptr_t) -> void;
     virtual auto pop() -> uintptr_t;
 public:

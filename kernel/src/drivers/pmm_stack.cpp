@@ -6,37 +6,32 @@ extern "C" int kernel_end;
 namespace drivers {
 namespace mm {
 PMMStack::PMMStack(multiboot_info_t* mb_info): MTGos::PMM(mb_info) {
+    auto isUsed=[mb_info](uintptr_t addr) -> bool {
+        if(addr == 0)
+            return true;
+        else if(addr == (uintptr_t)mb_info)
+            return true;
+        else if((addr >= (uintptr_t)(&kernel_start)) && (addr < (uintptr_t)(&kernel_end)))
+            return true;
+        else
+            return false;
+    };
+    head=tail=nullptr;
     multiboot_mmap_entry* mmap=(multiboot_mmap_entry*)((uintptr_t)mb_info->mmap_addr);
-    uintptr_t cmax=0;
     for(uint32_t i=0;i<(mb_info->mmap_length/sizeof(multiboot_mmap_entry));i++) {
         if(mmap[i].type==MULTIBOOT_MEMORY_AVAILABLE) {
-            cmax=mmap[i].addr+mmap[i].len > cmax ? mmap[i].addr+mmap[i].len : cmax;
+            for(uintptr_t p=(uintptr_t)(mmap[i].addr); p<(uintptr_t)(mmap[i].addr+mmap[i].len); p+= PAGE_SIZE) {
+                if(isUsed(p))
+                    continue;
+                push(p); //Mark as free
+            }
         }
     }
-    max=sp=(uintptr_t*)cmax;
-    sp-=sizeof(uintptr_t);
-    //First, free all free memory
-    for(uint32_t i=0;i<(mb_info->mmap_length/sizeof(multiboot_mmap_entry));i++) {
-        if(mmap[i].type==MULTIBOOT_MEMORY_AVAILABLE)
-            free((void*)((uintptr_t*)mmap[i].addr),mmap[i].len);
-    }
-    //Mark the stack
-    for(uintptr_t i=((uintptr_t)sp)&(~(PAGE_SIZE-1));i<cmax;i+=PAGE_SIZE) {
-        markUsed((void*)i);
-    }
-    //Next, mark the mb_struct as used
-    markUsed((void*)(((uintptr_t)mb_info)&(~(PAGE_SIZE-1))));
-    markUsed(nullptr);
-    //Then, all of the kernel
-    for(uintptr_t i=(uintptr_t)(&kernel_start);i<(uintptr_t)(&kernel_end);i+=PAGE_SIZE) {
-        markUsed((void*)i);
-    }
-    //Done!
 }
 auto PMMStack::isFree(void* ptr) -> bool{
-    uintptr_t p;
-    for(uintptr_t* i=sp;i<max;i++) {
-        if(p==*i)
+    uintptr_t p=(uintptr_t)ptr;
+    for(PMMList *curr=head;curr!=nullptr;curr=curr->next) {
+        if((uintptr_t)curr == p)
             return true;
     }
     return false;
@@ -44,12 +39,17 @@ auto PMMStack::isFree(void* ptr) -> bool{
 auto PMMStack::markUsed(void* ptr) -> bool {
     uintptr_t p=(uintptr_t)ptr;
     kout << MTGos::LogLevel::DEBUG << "Marking " << (uint64_t)p << " as used\n";
-    for(uintptr_t* i=sp;i<max;i++) {
-        if(p==*i) {
-            for(uintptr_t* j=i; j>sp; --j) {
-                *j=j[-1];
-            }
-            sp++;
+    for(PMMList *curr=head;curr!=nullptr;curr=curr->next) {
+
+        if((uintptr_t)curr == p) {
+            if(curr==head)
+                head=curr->next;
+            if(curr==tail)
+                tail=curr->last;
+            if(curr->next)
+                curr->next->last=curr->last;
+            if(curr->last)
+                curr->last->next=curr->next;
             return true;
         }
     }
@@ -58,14 +58,22 @@ auto PMMStack::markUsed(void* ptr) -> bool {
 auto PMMStack::push(uintptr_t p) -> void {
     if((uint64_t)p>=(uint64_t)MAX_PHYS)
         return;
-    *sp=p;
-    sp--;
+    PMMList *curr=(PMMList*)p;
+    curr->last=tail;
+    curr->next=nullptr;
+    if(!head)
+        head=curr;
+    if(tail)
+        tail->next=curr;
+    tail=curr;
     kout << MTGos::LogLevel::DEBUG << "Freeing " << (uint64_t)((uintptr_t)p) << "\n";
 }
 auto PMMStack::pop() -> uintptr_t {
-    sp++;
-    kout << MTGos::LogLevel::DEBUG << "Allocating " << (uint64_t)(*sp) << "\n";
-    return *sp;
+    PMMList *curr=head;
+    head=curr->next;
+    if(curr->next)
+        curr->next->last=nullptr;
+    return (uintptr_t)curr;
 }
 auto PMMStack::free(void* ptr, uint64_t size) -> void {
     if((uintptr_t)ptr >= MAX_PHYS)
@@ -77,7 +85,6 @@ auto PMMStack::alloc(uint64_t size) -> void * {
     uint64_t pages = ((size+PAGE_SIZE)/PAGE_SIZE)-1;
     if(!pages)
         pages=1;
-    kout << pages;
     if(pages==1)
         return (void*)(pop());
     for(uintptr_t i=0;i<=MAX_PHYS;i+=PAGE_SIZE) {

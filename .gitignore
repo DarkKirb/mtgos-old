@@ -12,3 +12,4 @@ docs/latex/
 *.neun
 config.yaml
 *.iso
+mtgos-builds/

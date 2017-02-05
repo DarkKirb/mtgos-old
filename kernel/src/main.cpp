@@ -3,6 +3,7 @@
 #include "output/display.hpp"
 #include "output/serial.hpp"
 #include "pmm.hpp"
+#include "base.hpp"
 extern "C" void(*start_ctors)();
 extern "C" void(*end_ctors)();
 extern "C" void(*start_dtors)();
@@ -28,8 +29,7 @@ extern "C" void start(int eax, multiboot_info_t* ebx)
         (**ctor)();
     kout << MTGos::LogLevel::INFO << "MTGos is starting\n"<< MTGos::LogLevel::INFO<<"Bootloader magic: 0x" << (uint64_t)eax << "\n";
     if(eax!=MULTIBOOT_BOOTLOADER_MAGIC) {
-        kout << MTGos::LogLevel::CRITICAL << "Not loaded by Multiboot conformant loader. Halting.\n";
-        for(;;);
+		panic("Not loaded by Multiboot conformant loader!\n");
     }
     kout << MTGos::LogLevel::INFO << "Loaded by: " << (char*)ebx->boot_loader_name << "\n";
 	out << "Triggering interrupt\n";

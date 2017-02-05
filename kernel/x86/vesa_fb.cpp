@@ -22,7 +22,7 @@ auto VESA_Framebuffer::getPixel(int x, int y) -> uint32_t {
 auto VESA_Framebuffer::destAddr(int x, int y) -> uint8_t * {
     //This is the ideal implementation. On 3DS you'd use y as x and x as y.
     uintptr_t start=mb_info->framebuffer_addr;
-    return (uint8_t*)(start+3*(x+(y*1024)));
+    return (uint8_t*)(start+(mb_info->framebuffer_bpp/8)*(x+(y*mb_info->framebuffer_width)));
 }
 }
 }

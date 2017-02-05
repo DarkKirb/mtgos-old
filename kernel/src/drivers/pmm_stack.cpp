@@ -83,6 +83,9 @@ auto PMMStack::pop() -> uintptr_t {
 auto PMMStack::free(void* ptr, uint64_t size) -> void {
     if((uintptr_t)ptr >= MAX_PHYS)
         return;
+    if((uint64_t)((uintptr_t)ptr) + size < size) {
+        size=MAX_PHYS-(uint64_t)((uintptr_t)ptr);
+    }
     for(uintptr_t i=(uintptr_t)ptr;i<((uintptr_t)ptr)+size;i+=PAGE_SIZE)
         push(i);
 }

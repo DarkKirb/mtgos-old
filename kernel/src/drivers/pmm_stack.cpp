@@ -12,8 +12,14 @@ PMMStack::PMMStack(multiboot_info_t* mb_info): MTGos::PMM(mb_info) {
             return true;
         else if((addr >= (uintptr_t)(&kernel_start)) && (addr < (uintptr_t)(&kernel_end)))
             return true;
-        else
+        else {
+            multiboot_mmap_entry* mmap=(multiboot_mmap_entry*)((uintptr_t)mb_info->mmap_addr);
+            for(uint32_t i=0;i<(mb_info->mmap_length/sizeof(multiboot_mmap_entry));i++) {
+                if((addr >= mmap[i].addr) && (addr < mmap[i].addr+mmap[i].len))
+                    return true;
+            }
             return false;
+        }
     };
     head=tail=nullptr;
     multiboot_mmap_entry* mmap=(multiboot_mmap_entry*)((uintptr_t)mb_info->mmap_addr);

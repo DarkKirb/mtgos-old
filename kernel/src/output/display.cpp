@@ -1,6 +1,7 @@
 #include "display.hpp"
 #include <defines.h>
 uint16_t *font[65536]={nullptr};
+bool fullwidth[65536]={false};
 struct fontEntry {
     int width;
     int codepoint;
@@ -32,6 +33,8 @@ Display::Display(multiboot_info_t* mb_info): mb_info(mb_info), x(0),y(0) {
         if(f->chars[i].codepoint > 65535)
             continue;
         font[f->chars[i].codepoint]=&(f->chars[i].bitmap[0]);
+        if(f->chars[i].width==16)
+            fullwidth[f->chars[i].codepoint]=true;
     }
 }
 Display::~Display() {}
@@ -52,6 +55,8 @@ auto Display::putChar(int c) -> void {
             }
             return;
     }
+    if((fullwidth[c]) && (x%2))
+        putChar(0);
     plotChar(x,y,c);
     x++;
     if(x>=SCREEN_WIDTH) {
@@ -138,13 +143,20 @@ auto Display::puts(const char * str) -> void {
     }
 }
 auto Display::plotChar(int x, int y, int c) -> void {
+    if(c<0)
+        return;
     if(buffer[x][y]==c)
         return;
-    for(int cx=0;cx<16;cx++) {
+    int width=(fullwidth[c]?16:8);
+    for(int cx=0;cx<width;cx++) {
         for(int cy=0;cy<16;cy++) {
-            plot(x*16+cx,y*16+cy,(font[c][cy]&(1<<cx))?0xFFFFFF:0);
+            plot(x*8+cx,y*16+cy,(font[c][cy]&(1<<cx))?0xFFFFFF:0);
         }
     }
     buffer[x][y]=c;
+    if(fullwidth[c]) {
+        this->x++;
+        buffer[x+1][y]=-1;
+    }
 }
 }

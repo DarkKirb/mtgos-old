@@ -1,0 +1,34 @@
+Font Format:
+Header:
+0x00-0x03: "FONT"
+0x04-0x07: Number of characters
+0x08-0x0B: Height of each glyph *HAS TO BE A POWER OF TWO BIGGER THAN 8*
+0x0C-0x0F: zero
+
+For each glyph:
+0x00-0x03: Width of this glyph *HAS TO BE A POWER OF TWO BIGGER THAN 8*
+0x04-0x07: Codepoint of the character
+then comes a height-element bitmap with width width-bit.
+
+i.E. 8x8 A:
+(Binary)
+00000100
+00000000
+00000000
+00000000
+
+01000001
+00000000
+00000000
+00000000
+
+00001100
+00011110
+00110011
+00110011
+00111111
+00110011
+00110011
+00000000
+
+Implementation detail: MTGos only displays fonts with size 16x16 and displays all characters with width 16

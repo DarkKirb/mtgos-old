@@ -9,6 +9,7 @@
 #include <ctr9/ctr_elf_loader.h>
 #include <ctr9/ctr_interrupt.h>
 #include <ctr9/ctr_pxi.h>
+#include <ctr9/ctr_cache.h>
 
 #include <ctrelf.h>
 #include <string.h>
@@ -16,7 +17,9 @@
 #include <stdint.h>
 #include <sys/stat.h>
 #include "multiboot.h"
+char stack[1024];
 void arm11main() {
+    asm volatile("mov sp, %0" : : "r"((uint32_t)(&stack)));
     //Filling multiboot info
     multiboot_info_t mb_info={0};
     mb_info.flags=MULTIBOOT_INFO_MEM_MAP | MULTIBOOT_INFO_FRAMEBUFFER_INFO | MULTIBOOT_INFO_BOOT_LOADER_NAME;
@@ -31,6 +34,10 @@ void arm11main() {
     mb_info.framebuffer_width=240;
     mb_info.framebuffer_bpp=24;
     mb_info.framebuffer_type=MULTIBOOT_FRAMEBUFFER_TYPE_RGB;
+    multiboot_module_t mods[1];
+    mods[0].mod_start=0x20000000;
+    mb_info.mods_count=1;
+    mb_info.mods_addr=(uint32_t)(&mods);
     //Fill mmap
     mmap[0].size=sizeof(multiboot_memory_map_t);
     mmap[0].addr=0x10000000;
@@ -76,7 +83,6 @@ void arm11main() {
 }
 int main()
 {
-
     ctr_drives_initialize();
     printf("hi!\n");
 	//To open a file, use fopen, using the drive as the prefix for the path.
@@ -86,6 +92,18 @@ int main()
 		printf("Couldn't open kernel9.elf!\n");
 		for(;;);
 	}
+    printf("Owning ARM11.\n");
+    *((uint32_t*)0x1FFFFFF8)=(uint32_t)(&arm11main);
+    printf("loading multiboot modules");
+    FILE *f2 = fopen("SD:/font.bin", "rb");
+    if(f2) {
+        fseek(f2,0,SEEK_END);
+        size_t size=ftell(f2);
+        fseek(f2,0,SEEK_SET);
+        fread((void*)0x20000000,size,1,f2);
+    }
+    ctr_cache_drain_write_buffer();
+    ctr_cache_clean_and_flush_all();
     printf("Filling the multiboot info.\n");
     multiboot_info_t mb_info={0};
     mb_info.flags=MULTIBOOT_INFO_MEM_MAP | MULTIBOOT_INFO_FRAMEBUFFER_INFO | MULTIBOOT_INFO_BOOT_LOADER_NAME;
@@ -100,6 +118,10 @@ int main()
     mb_info.framebuffer_width=240;
     mb_info.framebuffer_bpp=24;
     mb_info.framebuffer_type=MULTIBOOT_FRAMEBUFFER_TYPE_RGB;
+    multiboot_module_t mods[1];
+    mods[0].mod_start=0x20000000;
+    mb_info.mods_count=1;
+    mb_info.mods_addr=(uint32_t)(&mods);
     printf("Filling mmap\n");
     mmap[0].size=sizeof(multiboot_memory_map_t);
     mmap[0].addr=0;
@@ -160,8 +182,6 @@ int main()
     }
     ctr_load_segments(&header, file);
     fclose(file);
-    printf("Owning ARM11.\n");
-    *((uint32_t*)0x1FFFFFF8)=(uint32_t)(&arm11main);
     file=fopen("SD:/kernel11.elf","rb");
     if(file) {
         Elf32_Ehdr header11;
@@ -176,6 +196,8 @@ int main()
         fclose(file);
 
     }
+    ctr_cache_drain_write_buffer();
+    ctr_cache_clean_and_flush_all();
     ((void(*)(uint32_t,multiboot_info_t*))(header.e_entry))(0x2BADB002,&mb_info);
     ctr_system_poweroff();
 	return 0;

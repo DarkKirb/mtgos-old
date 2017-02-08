@@ -22,6 +22,7 @@ script:
     - echo "StrictHostKeyChecking no" > ~/.ssh/config
     - git clone ssh://travis@dark32.cf:2222/home/travis/mtgos-builds
     - export PATH=$HOME/opt/bin:$PATH
+    - cp font.bin mtgos-builds
     - echo "Building for i686"
     - cp templates/i686.yaml config.yaml
     - python3.4 ./make.py --clean --ci

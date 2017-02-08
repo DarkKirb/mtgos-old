@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 mkdir mtgos-builds
+sudo cp font.bin mtgos-builds
 echo "Building for i686"
 cp templates/i686.yaml config.yaml
 python3.4 ./make.py --clean --ci

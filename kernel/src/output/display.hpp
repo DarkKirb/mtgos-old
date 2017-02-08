@@ -8,7 +8,7 @@ class Display {
 public:
     Display(multiboot_info_t* mb_info);
     virtual ~Display();
-    auto putChar(char) -> void;
+    auto putChar(int) -> void;
     auto clearscr() -> void;
     auto scroll() -> void;
     virtual auto puts(const char*) -> void;
@@ -20,12 +20,12 @@ public:
     virtual auto plot(int x, int y, uint32_t color) -> void = 0;
     virtual auto getPixel(int x, int y) -> uint32_t =0;
 protected:
-    char buffer[SCREEN_WIDTH][SCREEN_HEIGHT];
+    int buffer[SCREEN_WIDTH][SCREEN_HEIGHT];
     multiboot_info_t* mb_info;
     virtual auto destAddr(int x, int y) -> uint8_t* = 0;
     int x,y;
 private:
-    auto plotChar(int x, int y, char c) -> void;
+    auto plotChar(int x, int y, int c) -> void;
 };
 template <>
 auto Display::operator<<<uint64_t>(uint64_t thing) -> Display &;

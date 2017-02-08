@@ -66,6 +66,7 @@ def main():
     link(config,"mtgos.elf", "kernel")
     print("Creating ISO")
     shutil.copy("mtgos.elf","iso")
+    shutil.copy("font.bin","iso")
     os.system("grub-mkrescue -o bootable.iso iso")
     print("All done!")
 #Cleans all *.o files

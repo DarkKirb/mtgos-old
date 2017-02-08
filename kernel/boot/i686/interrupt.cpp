@@ -40,7 +40,7 @@ extern "C" void panic2(char* text, cpu_state* cpu) {
     out << "esi: " << (uint64_t)cpu->esi << ", edi: " << (uint64_t)cpu->edi << "\n";
     out << "ebp: " << (uint64_t)cpu->ebp << ", eip: " << (uint64_t)cpu->intr << "\n";
     out << "i686-" << (uint64_t) BUILDID << "\n";
-    out << text << "\nHalting...";
+    out << text << "\nHalting...\n";
     for(;;);
 }
 extern "C" cpu_state* handleINT(cpu_state* cpu) {

@@ -26,7 +26,15 @@
 #    define VIRT_BITS 32
 #    define PAGE_SIZE 4096
 #   else
-#    error "Unknown arch!"
+#    ifdef WII
+#     define SCREEN_WIDTH 100
+#     define SCREEN_HEIGHT 26
+#     define PHYS_BITS 32
+#     define VIRT_BITS 32
+#     define PAGE_SIZE 4096
+#    else
+#     error "Unknown arch!"
+#    endif
 #   endif
 #  endif
 # endif

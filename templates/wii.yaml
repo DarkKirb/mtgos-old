@@ -1,0 +1,32 @@
+---
+#Generic settings DO NOT TOUCH UNLESS YOU KNoW WHAT YOU'RE DOING!
+arch: wii
+includes:
+    - ../../include #kernel/boot/i686
+    - ../include
+    - include
+
+search_dirs:
+    - kernel/boot/wii
+    - kernel/src
+    - kernel/wii
+
+cxxflags: -w -Werror -Wno-unused -Wno-unused-variable -Wno-reorder -g -fPIC -std=gnu++14 -fstack-protector-strong -fno-exceptions -fno-rtti -fno-use-cxa-atexit -fdump-class-hierarchy -ffreestanding -nostdlib -DWII -mcpu=750 -mhard-float
+cflags: -w -Werror -Wno-unused -Wno-unused-variable  -g -fPIC -std=gnu11 -fstack-protector-strong -ffreestanding -nostdlib -DWII -mcpu=750 -mhard-float
+asflags: -g -mcpu=750 -meabi -mhard-float
+ldflags: -nostdlib -nodefaultlibs -T kernel/wii.ld
+prefix: ppc-elf-
+#Modify starting here
+modules:
+
+builtins:
+    DISPLAY:
+        NONE: false
+        YUY2LFB: true
+    KPRINT:
+        NONE: false
+        DISPLAY: true
+    PMM:
+        STACK: true
+
+finished: false

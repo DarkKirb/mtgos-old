@@ -35,7 +35,7 @@ extern "C" void start(int eax, multiboot_info_t* ebx)
 	out << "Triggering interrupt\n";
 #ifdef __arm__
 	asm volatile("SVC #0");
-#else
+#elif defined(I686) || defined(X86_64)
 	asm volatile("int $0x20");
 #endif
 	out << "Am I still there?\n";

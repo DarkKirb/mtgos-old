@@ -1,7 +1,7 @@
 language: python
 install:
     - cd ~
-    - wget https://transfer.sh/drBYD/crosscompiler.tar.xz
+    - wget https://transfer.sh/b8AsU/crosscompiler.tar.xz
     - tar -xf crosscompiler.tar.xz
     - cd -
     - yes '' | sudo add-apt-repository ppa:fkrull/deadsnakes
@@ -39,6 +39,14 @@ script:
     - cp templates/3ds11.yaml config.yaml
     - python3.4 ./make.py --clean --ci
     - mv mtgos.elf mtgos-builds/kernel11.elf
+    - echo "Building for Wii"
+    - cp font.big mtgos-builds
+    - mkdir -pv mtgos-builds/apps/mtgloader
+    - cp bootloader/wii/wii.dol mtgos-builds/apps/mtgloader/boot.dol
+    - cp templates/wii.yaml config.yaml
+    - python3.4  ./make.py --clean --ci
+    - mv mtgos.elf mtgos-builds/wii.elf
+
 after_success:
     - cd mtgos-builds
     - git add .

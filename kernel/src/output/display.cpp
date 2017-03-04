@@ -23,18 +23,24 @@ Display::Display(multiboot_info_t* mb_info): mb_info(mb_info), x(0),y(0) {
     //Font has to be the first module
     multiboot_module_t *mods = (multiboot_module_t*)((uintptr_t)(mb_info->mods_addr));
     fontHeader* f = (fontHeader*)((uintptr_t)(mods[0].mod_start));
-    if((f->magic[0] != 'F') || (f->magic[1] != 'O') || (f->magic[2] != 'N') || (f->magic[3] != 'T')) {
+    if(*((uint32_t*)(&f->magic))!=0x464F4E54) {
         //Not a font
         //for(;;);
     }
     for(int i=0;i<65536;i++)
         font[i]=nullptr;
     for(int i=0;i<f->charno;i++) {
-        if(f->chars[i].codepoint > 65535)
+        if(f->chars[i].codepoint > 65535) {
             continue;
+        }
         font[f->chars[i].codepoint]=&(f->chars[i].bitmap[0]);
         if(f->chars[i].width==16)
             fullwidth[f->chars[i].codepoint]=true;
+    }
+    *((uint32_t*)0xcd0000c0)|=0x20;
+    uint32_t *lfb=(uint32_t*)0xC01EB800;
+    for(int i=0;i<100;i++) {
+        lfb[i]=0xAFFE;
     }
 }
 Display::~Display() {}

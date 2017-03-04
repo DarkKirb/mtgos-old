@@ -19,3 +19,10 @@ sudo mv mtgos.elf mtgos-builds/kernel9.elf
 cp templates/3ds11.yaml config.yaml
 python3.4 ./make.py --clean --ci
 sudo mv mtgos.elf mtgos-builds/kernel11.elf
+echo "Building for Wii"
+sudo cp font.big mtgos-builds
+sudo mkdir -pv mtgos-builds/apps/mtgloader
+sudo cp bootloader/wii/wii.dol mtgos-builds/apps/mtgloader/boot.dol
+cp templates/wii.yaml config.yaml
+python3.4  ./make.py --clean --ci
+sudo mv mtgos.elf mtgos-builds/wii.elf

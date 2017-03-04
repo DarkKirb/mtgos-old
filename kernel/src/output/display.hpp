@@ -35,6 +35,8 @@ auto Display::operator<<<uint64_t>(uint64_t thing) -> Display &;
 #include "../../x86/vesa_fb.hpp"
 #elif defined(_3DS9) || defined(_3DS11)
 #include "../../3ds/lfb.hpp"
+#elif defined(WII)
+#include "../../wii/yuy2lfb.hpp"
 #endif
 #ifdef DISPLAY_NONE
 #define DISPLAY drivers::display::NullDisplay
@@ -44,6 +46,10 @@ auto Display::operator<<<uint64_t>(uint64_t thing) -> Display &;
 #else
 #ifdef DISPLAY_LFB
 #define DISPLAY drivers::display::LFB
+#else
+#ifdef DISPLAY_YUY2LFB
+#define DISPLAY drivers::display::YUY2Framebuffer
+#endif
 #endif
 #endif
 #endif

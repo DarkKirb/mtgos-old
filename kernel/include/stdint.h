@@ -65,9 +65,9 @@
 #define __UINT_FAST32_MAX__ __UNATIVE_MAX__
 #define __UINT_FAST64_MAX__ __UNATIVE_MAX__
 #define __UINTPTR_MAX__ __UNATIVE_MAX__
-#ifndef __arm__
-typedef unsigned __NATIVE_TYPE__ size_t;
-#else
+#if defined(__arm__) || defined(WII)
 typedef unsigned int size_t;
+#else
+typedef unsigned __NATIVE_TYPE__ size_t;
 #endif
 #include <stdint-gcc.h>

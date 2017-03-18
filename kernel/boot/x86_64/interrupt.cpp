@@ -1,6 +1,6 @@
 #include <stdint.h>
 #include <interrupts.hpp>
-#include "../src/base.hpp"
+#include <base.hpp>
 struct IDTent {
     uint16_t offset1;
     uint16_t selector;

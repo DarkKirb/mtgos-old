@@ -1,5 +1,5 @@
 #include <interrupts.hpp>
-#include "../src/base.hpp"
+#include <base.hpp>
 extern "C" void panic2(char* text, cpu_state* state) {
     out << "=== KERNEL PANIC ===\n";
     out << "MTGos encountered a problem it couldn't resolve\n";

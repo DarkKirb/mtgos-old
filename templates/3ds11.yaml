@@ -5,11 +5,17 @@ includes:
     - ../../include #kernel/boot/i686
     - ../include
     - include
+    - ../kernel/include
+    - ../kernel/src/include
+    - ../libk/include
+    - ../../libk/include
+    - ../../../libk/include
 
 search_dirs:
     - kernel/boot/3ds11
     - kernel/src
     - kernel/3ds
+    - libk
 
 cxxflags: -w -Werror -Wno-unused -Wno-unused-variable -Wno-reorder -g -std=gnu++14 -fstack-protector-strong -fno-exceptions -fno-rtti -fno-use-cxa-atexit -fdump-class-hierarchy -ffreestanding -nostdlib -D_3DS11 -mcpu=mpcore -mlittle-endian -march=armv6k -mtune=mpcore -mfloat-abi=softfp -mfpu=vfp
 cflags: -w -Werror -Wno-unused -Wno-unused-variable  -g -std=gnu11 -fstack-protector-strong -ffreestanding -nostdlib -D_3DS11 -mcpu=mpcore -mlittle-endian -march=armv6k -mtune=mpcore -mfloat-abi=softfp -mfpu=vfp

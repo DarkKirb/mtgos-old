@@ -1,6 +1,6 @@
-#include "output/serial.hpp"
-#include "output/display.hpp"
-#include "pmm.hpp"
+#include "../src/output/serial.hpp"
+#include "../src/output/display.hpp"
+#include "../src/pmm.hpp"
 extern DISPLAY out;
 extern SERIAL kout;
 extern PMMD pmm;

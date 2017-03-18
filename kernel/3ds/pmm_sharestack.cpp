@@ -1,4 +1,4 @@
-#include "../src/base.hpp"
+#include <base.hpp>
 #include <stdint.h>
 extern "C" int kernel_start;
 extern "C" int kernel_end;

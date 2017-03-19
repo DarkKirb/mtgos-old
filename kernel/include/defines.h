@@ -26,7 +26,12 @@
 #    define VIRT_BITS 32
 #    define PAGE_SIZE 4096
 #   else
-#    error "Unknown arch!"
+#    warning "Unknown arch!"
+#    define SCREEN_WIDTH 1
+#    define SCREEN_HEIGHT 1
+#    define PHYS_BITS 1
+#    define VIRT_BITS 1
+#    define PAGE_SIZE 2
 #   endif
 #  endif
 # endif

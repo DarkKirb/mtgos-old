@@ -14,6 +14,7 @@ public:
     virtual auto markUsed(void*) -> bool = 0;
 };
 }
+#ifndef __EXTERNAL
 #include "drivers/pmm_stack.hpp"
 #if defined(_3DS9) || defined(_3DS11)
 #include "../3ds/pmm_sharestack.hpp"
@@ -22,7 +23,10 @@ public:
 #define PMMD drivers::mm::PMMStack
 #else
 #ifdef PMM_SHAREDSTACK
-
 #define PMMD drivers::mm::PMMShareStack
 #endif
+#endif
+#else
+#include "drivers/pmm_stack.hpp"
+#define PMMD drivers::mm::PMMStack
 #endif

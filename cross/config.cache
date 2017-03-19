@@ -1,0 +1,7 @@
+ac_cv_func_shl_load=no
+ac_cv_lib_dld_shl_load=no
+ac_cv_func_dlopen=no
+ac_cv_lib_dl_dlopen=no
+ac_cv_lib_dld_dlopen=no
+ac_cv_lib_svld_dlopen=no
+ac_cv_lib_dld_dld_link=no

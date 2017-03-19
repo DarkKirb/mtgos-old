@@ -30,6 +30,7 @@ private:
 template <>
 auto Display::operator<<<uint64_t>(uint64_t thing) -> Display &;
 }
+#ifndef __EXTERNAL
 #include "../drivers/display_null.hpp"
 #if defined(X86_64) || defined(I686)
 #include "../../x86/vesa_fb.hpp"
@@ -46,4 +47,8 @@ auto Display::operator<<<uint64_t>(uint64_t thing) -> Display &;
 #define DISPLAY drivers::display::LFB
 #endif
 #endif
+#endif
+#else
+#include "../drivers/display_null.hpp"
+#define DISPLAY drivers::display::NullDisplay
 #endif

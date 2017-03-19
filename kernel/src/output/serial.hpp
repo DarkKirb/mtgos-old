@@ -33,6 +33,7 @@ auto Serial::operator<<<uint64_t>(uint64_t thing) -> Serial &;
 template <>
 auto Serial::operator<<<LogLevel>(LogLevel thing) -> Serial &;
 }
+#ifndef __EXTERNAL
 #include "../drivers/serial_null.hpp"
 #include "../drivers/serial_to_display.hpp"
 #if defined(X86_64) || defined(I686)
@@ -48,4 +49,8 @@ auto Serial::operator<<<LogLevel>(LogLevel thing) -> Serial &;
 #define SERIAL drivers::serial::DisplaySerial
 #endif
 #endif
+#endif
+#else
+#include "../drivers/serial_to_display.hpp"
+#define SERIAL drivers::serial::DisplaySerial
 #endif

@@ -17,10 +17,10 @@ search_dirs:
     - kernel/3ds
     - libk
 
-cxxflags: -w -Werror -Wno-unused -Wno-unused-variable -Wno-reorder -g -std=gnu++14 -fstack-protector-strong -fno-exceptions -fno-rtti -fno-use-cxa-atexit -fdump-class-hierarchy -ffreestanding -nostdlib -D_3DS11 -mcpu=mpcore -mlittle-endian -march=armv6k -mtune=mpcore -mfloat-abi=softfp -mfpu=vfp
+cxxflags: -w -Werror -Wno-unused -Wno-unused-variable -Wno-reorder -g -std=gnu++14 -fstack-protector-strong -fno-use-cxa-atexit -fdump-class-hierarchy -ffreestanding -nostdlib -D_3DS11 -mcpu=mpcore -mlittle-endian -march=armv6k -mtune=mpcore -mfloat-abi=softfp -mfpu=vfp -fno-rtti
 cflags: -w -Werror -Wno-unused -Wno-unused-variable  -g -std=gnu11 -fstack-protector-strong -ffreestanding -nostdlib -D_3DS11 -mcpu=mpcore -mlittle-endian -march=armv6k -mtune=mpcore -mfloat-abi=softfp -mfpu=vfp
 asflags: -g  -march=armv6k -mtune=mpcore -mfloat-abi=softfp -mfpu=vfp
-ldflags: -nostdlib -nodefaultlibs -T kernel/3ds11.ld
+ldflags: -nostdlib -nodefaultlibs -T kernel/3ds11.ld -lgcc -lsupc++
 prefix: arm-none-eabi-
 #Modify starting here
 modules:

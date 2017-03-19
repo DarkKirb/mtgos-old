@@ -72,7 +72,7 @@ def main():
         build(config)
         os.chdir(wd)
     print("Linking mtgos")
-    link(config, "mtgos.elf", "kernel")
+    link(config, "mtgos.elf", ".")
     print("Creating ISO")
     shutil.copy("mtgos.elf", "iso")
     shutil.copy("font.bin", "iso")
@@ -182,9 +182,10 @@ def link(config, f, d):
     for root, dirnames, filenames in os.walk(d):
         for filename in fnmatch.filter(filenames, '*.o'):
             objs.append(os.path.join(root, filename))
+    print(objs)
     objs = ' '.join(objs)
-    if os.system("{prefix}g++ {ldflags} -o {f} {objs} -lgcc".format(prefix=config["prefix"], ldflags=config["ldflags"], f=f, objs=objs)):
-        raise ValueError("Failed linking {f} via {prefix}g++ {ldflags} -o {f} {objs} -lgcc".format(
+    if os.system("{prefix}g++ {ldflags} -o {f} {objs} -lgcc -lsupc++".format(prefix=config["prefix"], ldflags=config["ldflags"], f=f, objs=objs)):
+        raise ValueError("Failed linking {f} via {prefix}g++ {ldflags} -o {f} {objs} -lgcc -lsupc++".format(
             prefix=config["prefix"], ldflags=config["ldflags"], f=f, objs=objs))
 
 if __name__ == "__main__":

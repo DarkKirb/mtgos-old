@@ -3,6 +3,7 @@ install:
     - cd ~
     - wget http://dark32.cf/static/crosscompiler.tar.xz
     - tar -xf crosscompiler.tar.xz
+    - cd -
     - yes '' | sudo add-apt-repository ppa:fkrull/deadsnakes
     - sudo apt-get update
     - sudo apt-get install grub2 grub2-common python3.4 xorriso

@@ -1,8 +1,9 @@
 ENTRY(_start)
 SECTIONS
 {
-        . = 0x1FF80000;
+    . = 0x1FF80000;
         kernel_start = .;
+        __exidx_start = .;
         .text : {
                 *(.text)
         }
@@ -20,13 +21,14 @@ SECTIONS
         .rodata : {
                 *(.rodata)
         }
+        __exidx_end=.;
         .bss : {
                 *(.bss)
                 *(COMMON)
         }
-        kernel_end = .;
         . = 0x1FFFF000;
         .text.boot : {
-            *(.text.boot)
+            KEEP(*(.text.boot));
         }
+        kernel_end=.;
 }

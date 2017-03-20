@@ -35,7 +35,7 @@ void arm11main() {
     mb_info.framebuffer_bpp=24;
     mb_info.framebuffer_type=MULTIBOOT_FRAMEBUFFER_TYPE_RGB;
     multiboot_module_t mods[1];
-    mods[0].mod_start=0x20000000;
+    mods[0].mod_start=0x21000000;
     mb_info.mods_count=1;
     mb_info.mods_addr=(uint32_t)(&mods);
     //Fill mmap
@@ -84,6 +84,7 @@ void arm11main() {
 int main()
 {
     ctr_drives_initialize();
+    ctr_libctr9_init();;
     printf("hi!\n");
 	//To open a file, use fopen, using the drive as the prefix for the path.
 	FILE *file = fopen("SD:/kernel9.elf", "rb");
@@ -100,7 +101,7 @@ int main()
         fseek(f2,0,SEEK_END);
         size_t size=ftell(f2);
         fseek(f2,0,SEEK_SET);
-        fread((void*)0x20000000,size,1,f2);
+        fread((void*)0x21000000,size,1,f2);
     }
     ctr_cache_drain_write_buffer();
     ctr_cache_clean_and_flush_all();
@@ -119,7 +120,7 @@ int main()
     mb_info.framebuffer_bpp=24;
     mb_info.framebuffer_type=MULTIBOOT_FRAMEBUFFER_TYPE_RGB;
     multiboot_module_t mods[1];
-    mods[0].mod_start=0x20000000;
+    mods[0].mod_start=0x21000000;
     mb_info.mods_count=1;
     mb_info.mods_addr=(uint32_t)(&mods);
     printf("Filling mmap\n");

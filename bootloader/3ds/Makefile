@@ -1,9 +1,9 @@
 CC=$(DEVKITARM)/bin/arm-none-eabi-gcc
 LD=$(DEVKITARM)/bin/arm-none-eabi-gcc
 ASFLAGS=-Wno-error -mcpu=arm946e-s -march=armv5te
-CFLAGS=-Wno-error -I$(DEVKITPRO)/portlibs/armv5te/include -I$(DEVKITPRO)/portlibs/armv5te/include/freetype2 -std=gnu11 -mcpu=arm946e-s -march=armv5te -flto -mthumb
+CFLAGS=-Wno-error -I$(DEVKITPRO)/portlibs/armv5te/include -I$(DEVKITPRO)/portlibs/armv5te/include/freetype2 -std=gnu11 -mcpu=arm946e-s -march=armv5te -flto -mthumb -ffunction-sections -fdata-sections
 
-LDFLAGS=-L$(DEVKITPRO)/portlibs/armv5te/lib -L$(DEVKITARM)/arm-none-eabi/lib/ -lz -lc -lm -Tbootloader.ld -flto
+LDFLAGS=-L$(DEVKITPRO)/portlibs/armv5te/lib -L$(DEVKITARM)/arm-none-eabi/lib/ -lz -lc -lm -Tbootloader.ld -flto -Wl,--gc-sections
 SRCS=$(shell find -name '*.[cS]')
 OBJS=$(addsuffix .o,$(basename $(SRCS)))
 arm9loaderhax_si.bin: arm9loaderhax.elf

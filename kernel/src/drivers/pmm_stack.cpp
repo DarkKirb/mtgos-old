@@ -15,6 +15,8 @@ PMMStack::PMMStack(multiboot_info_t* mb_info): MTGos::PMM(mb_info) {
         else {
             multiboot_mmap_entry* mmap=(multiboot_mmap_entry*)((uintptr_t)mb_info->mmap_addr);
             for(uint32_t i=0;i<(mb_info->mmap_length/sizeof(multiboot_mmap_entry));i++) {
+                if(mmap[i].type==MULTIBOOT_MEMORY_AVAILABLE)
+                    continue;
                 if((addr >= mmap[i].addr) && (addr < mmap[i].addr+mmap[i].len))
                     return true;
             }

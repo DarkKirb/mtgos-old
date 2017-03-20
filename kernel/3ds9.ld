@@ -3,8 +3,9 @@ SECTIONS
 {
         . = 0x08000000;
         kernel_start = .;
+        __exidx_start = .;
         .text : {
-                *(.btext)
+                KEEP(*(.btext));
                 *(.text)
         }
         .data : {
@@ -21,6 +22,7 @@ SECTIONS
         .rodata : {
                 *(.rodata)
         }
+        __exidx_end = .;
         .bss : {
                 *(.bss)
                 *(COMMON)

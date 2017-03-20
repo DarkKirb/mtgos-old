@@ -1,9 +1,11 @@
 language: python
 install:
-    - cd ~
-    - wget https://transfer.sh/drBYD/crosscompiler.tar.xz
-    - tar -xf crosscompiler.tar.xz
-    - cd -
+    - make -C cross fetch
+    - make -C cross patch
+    - make -C cross prereqs
+    - make -C cross i686-elf-gcc
+    - make -C cross arm-none-eabi-gcc
+    - make -C cross x86-64-elf-gcc
     - yes '' | sudo add-apt-repository ppa:fkrull/deadsnakes
     - sudo apt-get update
     - sudo apt-get install grub2 grub2-common python3.4 xorriso

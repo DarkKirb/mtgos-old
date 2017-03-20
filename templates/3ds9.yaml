@@ -17,10 +17,10 @@ search_dirs:
     - kernel/3ds
     - libk
 
-cxxflags: -w -Werror -Wno-unused -Wno-unused-variable -Wno-reorder -g -fPIC -std=gnu++14 -fstack-protector-strong -fno-use-cxa-atexit -fdump-class-hierarchy -ffreestanding -nostdlib -D_3DS9 -mcpu=arm946e-s -march=armv5te  -mno-thumb-interwork -marm -fno-rtti
-cflags: -w -Werror -Wno-unused -Wno-unused-variable  -g -fPIC -std=gnu11 -fstack-protector-strong -ffreestanding -nostdlib -D_3DS9 -mcpu=arm946e-s -march=armv5te  -mno-thumb-interwork -marm
+cxxflags: -w -Werror -Wno-unused -Wno-unused-variable -Wno-reorder -g -fPIC -std=gnu++14 -fstack-protector-strong -fno-use-cxa-atexit -fdump-class-hierarchy -ffreestanding -nostdlib -D_3DS9 -mcpu=arm946e-s -march=armv5te  -mno-thumb-interwork -marm -Os -ffunction-sections -fdata-sections -fno-rtti
+cflags: -w -Werror -Wno-unused -Wno-unused-variable  -g -fPIC -std=gnu11 -fstack-protector-strong -ffreestanding -nostdlib -D_3DS9 -mcpu=arm946e-s -march=armv5te  -mno-thumb-interwork -marm -Os -ffunction-sections -fdata-sections -fno-rtti
 asflags: -g -mcpu=arm946e-s -march=armv5te
-ldflags: -nostdlib -nodefaultlibs -T kernel/3ds9.ld -lgcc -lsupc++
+ldflags: -nostdlib -nodefaultlibs -T kernel/3ds9.ld -lgcc -lsupc++ -Wl,--gc-sections
 prefix: arm-none-eabi-
 #Modify starting here
 modules:

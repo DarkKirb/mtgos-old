@@ -40,8 +40,6 @@ extern "C" void start(int eax, multiboot_info_t* ebx)
 #endif
 	out << "Am I still there?\n";
 	out << "Some unicode characters: ẞßÄÖÜäöüéëæ‽¡テスト眼鏡\n";
-	for(int i=0;i<65536;i++)
-		out.putChar(i);
 	while(true) {
 		pmm.alloc(1);
 		//out << (uint64_t)((uintptr_t)(pmm.alloc(1))) << "\n";

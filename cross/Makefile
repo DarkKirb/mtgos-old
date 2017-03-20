@@ -1,6 +1,6 @@
 CROSSPATH = $(HOME)/opt
 TARGET = none
-export PATH := $(CROSSPATH)/opt/bin:$(PATH)
+export PATH := $(CROSSPATH)/bin:$(PATH)
 all: | clean $(CROSSPATH)/ fetch patch prereqs i686-elf-gcc arm-none-eabi-gcc armeb-eabi-gcc ppc-elf-gcc aarch64-none-elf-gcc x86-64-elf-gcc
 	
 clean:

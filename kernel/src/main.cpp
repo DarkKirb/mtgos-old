@@ -8,6 +8,8 @@ extern "C" void(*start_ctors)();
 extern "C" void(*end_ctors)();
 extern "C" void(*start_dtors)();
 extern "C" void(*end_dtors)();
+extern "C" void* start_eh_frame;
+extern "C" void __register_frame(void**);
 
 static inline void outb(uint16_t port, uint8_t val) {
 	asm volatile("outb %0, %1" : : "a"(val), "Nd"(port));
@@ -24,27 +26,37 @@ PMMD pmm(mb_info);
 
 extern "C" void start(int eax, multiboot_info_t* ebx)
 {
-	mb_info=ebx;
-    for(auto ctor=&start_ctors;ctor<&end_ctors;ctor++)
-        (**ctor)();
-    kout << MTGos::LogLevel::INFO << "MTGos is starting\n"<< MTGos::LogLevel::INFO<<"Bootloader magic: 0x" << (uint64_t)eax << "\n";
-    if(eax!=MULTIBOOT_BOOTLOADER_MAGIC) {
-		panic("Not loaded by Multiboot conformant loader!\n");
-    }
-    kout << MTGos::LogLevel::INFO << "Loaded by: " << (char*)ebx->boot_loader_name << "\n";
-	out << "Triggering interrupt\n";
+    __register_frame(&start_eh_frame);
+    try {
+    	mb_info=ebx;
+        for(auto ctor=&start_ctors;ctor<&end_ctors;ctor++)
+            (**ctor)();
+        kout << MTGos::LogLevel::INFO << "MTGos is starting\n"<< MTGos::LogLevel::INFO<<"Bootloader magic: 0x" << (uint64_t)eax << "\n";
+        if(eax!=MULTIBOOT_BOOTLOADER_MAGIC) {
+    		panic("Not loaded by Multiboot conformant loader!\n");
+        }
+        kout << MTGos::LogLevel::INFO << "Loaded by: " << (char*)ebx->boot_loader_name << "\n";
+    	out << "Triggering interrupt\n";
 #ifdef __arm__
-	asm volatile("SVC #0");
+    asm volatile("SVC #0");
 #else
-	asm volatile("int $0x20");
+    	asm volatile("int $0x20");
 #endif
-	out << "Am I still there?\n";
-	out << "Some unicode characters: ẞßÄÖÜäöüéëæ‽¡テスト眼鏡\n";
-	while(true) {
-		pmm.alloc(1);
-		//out << (uint64_t)((uintptr_t)(pmm.alloc(1))) << "\n";
-	}
-    for(auto dtor=&start_dtors;dtor!=&end_dtors;dtor++)
-        (**dtor)();
+    	out << "Am I still there?\n";
+    	out << "Some unicode characters: ẞßÄÖÜäöüéëæ‽¡テスト眼鏡\n";
+        try {
+            throw "asdf";
+        } catch(const char *) {
+            out << "Caught an exception!\n";
+        }
+	    while(true) {
+    		pmm.alloc(1);
+	    	//out << (uint64_t)((uintptr_t)(pmm.alloc(1))) << "\n";
+    	}
+        for(auto dtor=&start_dtors;dtor!=&end_dtors;dtor++)
+            (**dtor)();
+    } catch (...) {
+        panic("Uncaught kernel-mode exception!");
+    }
     for(int x=1;x>0;x++);
 }

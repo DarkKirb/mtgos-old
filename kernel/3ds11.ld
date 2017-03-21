@@ -11,12 +11,15 @@ SECTIONS
                 start_ctors = .;
                         KEEP(*( .init_array ));
                         KEEP(*(SORT_BY_INIT_PRIORITY( .init_array.* )));
-                        *(.ctors)
+                        KEEP(*(.ctors ));
                 end_ctors = .;
                 start_dtors = .;
-                        *(.dtors)
+                        KEEP(*(.dtors));
                 end_dtors = .;
-                *(.data)
+                start_eh_frame = .;
+                *(.eh_frame);
+                . += 4;
+                *(.data);
         }
         .rodata : {
                 *(.rodata)

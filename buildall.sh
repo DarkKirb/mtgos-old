@@ -19,3 +19,4 @@ sudo mv mtgos.elf mtgos-builds/kernel9.elf
 cp templates/3ds11.yaml config.yaml
 python3.4 ./make.py --clean --ci
 sudo mv mtgos.elf mtgos-builds/kernel11.elf
+true

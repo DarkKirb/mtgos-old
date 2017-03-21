@@ -57,7 +57,7 @@ def main():
             "You have to finish your configuration before you can build!")
     buildid = " -DBUILDID=" + hex(random.getrandbits(64)) + " "
     if "TRAVIS_COMMIT" in os.environ:
-        buildid = " -DBUILDID=0x"+os.environ["TRAVIS_COMMIT"][:8]+" "
+        buildid = " -DBUILDID=0x"+os.environ["TRAVIS_COMMIT"][:16]+" "
     config["cflags"] += buildid
     config["cxxflags"] += buildid
     config["asflags"] += buildid

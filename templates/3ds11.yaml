@@ -18,9 +18,9 @@ search_dirs:
     - libk
 
 cxxflags: -w -Werror -Wno-unused -Wno-unused-variable -Wno-reorder -g -std=gnu++14 -fstack-protector-strong -fno-use-cxa-atexit -fdump-class-hierarchy -ffreestanding -nostdlib -D_3DS11 -mcpu=mpcore -mlittle-endian -march=armv6k -mtune=mpcore -mfloat-abi=softfp -ffunction-sections -fdata-sections -O0
-cflags: -w -Werror -Wno-unused -Wno-unused-variable  -g -std=gnu11 -fstack-protector-strong -ffreestanding -nostdlib -D_3DS11 -mcpu=mpcore -mlittle-endian -march=armv6k -mtune=mpcore -mfloat-abi=softfp -ffunction-sections -fdata-sections -O0 -fno-rtti
+cflags: -w -Werror -Wno-unused -Wno-unused-variable  -g -std=gnu11 -fstack-protector-strong -ffreestanding -nostdlib -D_3DS11 -mcpu=mpcore -mlittle-endian -march=armv6k -mtune=mpcore -mfloat-abi=softfp -ffunction-sections -fdata-sections -O0
 asflags: -g  -march=armv6k -mtune=mpcore -mfloat-abi=softfp
-ldflags: -nostdlib -nodefaultlibs -T kernel/3ds11.ld -lgcc -lsupc++ -Wl,--gc-sections
+ldflags: -nostdlib -nodefaultlibs -T kernel/3ds11.ld -lgcc -lsupc++ 
 prefix: arm-none-eabi-
 #Modify starting here
 modules:

@@ -17,8 +17,11 @@ SECTIONS
             KEEP(*(.dtors));
         end_dtors = .;
         start_eh_frame = .;
-        *(.eh_frame);
-        . += 4;
+        KEEP(*(.eh_frame));
+        KEEP(*(.eh_frame.*));
+        QUAD(0);
+        KEEP(*(.gcc_except_table));
+        KEEP(*(.gcc_except_table.*));
         *(.data)
     }
     .rodata : {

@@ -26,11 +26,13 @@ PMMD pmm(mb_info);
 
 extern "C" void start(int eax, multiboot_info_t* ebx)
 {
+    mb_info=ebx;
+    for(auto ctor=&start_ctors;ctor<&end_ctors;ctor++)
+        (**ctor)();
+#ifndef __arm__
     __register_frame(&start_eh_frame);
+#endif
     try {
-    	mb_info=ebx;
-        for(auto ctor=&start_ctors;ctor<&end_ctors;ctor++)
-            (**ctor)();
         kout << MTGos::LogLevel::INFO << "MTGos is starting\n"<< MTGos::LogLevel::INFO<<"Bootloader magic: 0x" << (uint64_t)eax << "\n";
         if(eax!=MULTIBOOT_BOOTLOADER_MAGIC) {
     		panic("Not loaded by Multiboot conformant loader!\n");
@@ -53,10 +55,10 @@ extern "C" void start(int eax, multiboot_info_t* ebx)
     		pmm.alloc(1);
 	    	//out << (uint64_t)((uintptr_t)(pmm.alloc(1))) << "\n";
     	}
-        for(auto dtor=&start_dtors;dtor!=&end_dtors;dtor++)
-            (**dtor)();
-    } catch (...) {
+    } catch(...) {
         panic("Uncaught kernel-mode exception!");
     }
+    for(auto dtor=&start_dtors;dtor!=&end_dtors;dtor++)
+        (**dtor)();
     for(int x=1;x>0;x++);
 }

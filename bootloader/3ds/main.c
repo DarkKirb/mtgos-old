@@ -78,7 +78,6 @@ void arm11main() {
         if(*((uint32_t*)0x1FFFFFF8))
             break;
     }
-
     (*((void(**)(uint32_t,multiboot_info_t*))0x1FFFFFF8))(0x2BADB002,&mb_info);
 }
 int main()
@@ -95,7 +94,7 @@ int main()
 	}
     printf("Owning ARM11.\n");
     *((uint32_t*)0x1FFFFFF8)=(uint32_t)(&arm11main);
-    printf("loading multiboot modules");
+    printf("loading multiboot modules\n");
     FILE *f2 = fopen("SD:/font.bin", "rb");
     if(f2) {
         fseek(f2,0,SEEK_END);
@@ -103,6 +102,7 @@ int main()
         fseek(f2,0,SEEK_SET);
         fread((void*)0x21000000,size,1,f2);
     }
+    printf("Loaded the font\n");
     ctr_cache_drain_write_buffer();
     ctr_cache_clean_and_flush_all();
     printf("Filling the multiboot info.\n");
@@ -174,24 +174,28 @@ int main()
     mmap[9].len=0x00004000;
     mmap[9].type=MULTIBOOT_MEMORY_RESERVED; //DTCM
 
-    printf("Loading the kernel.\n");
     Elf32_Ehdr header;
     ctr_load_header(&header, file);
     if(!ctr_check_elf(&header)) {
-        printf("ERROR! This isn't a valid ELF!\n");
+        printf("This isn't a valid ELF!\n");
         for(;;);
     }
     ctr_load_segments(&header, file);
+    printf("Loaded kernel9\n");
     fclose(file);
     file=fopen("SD:/kernel11.elf","rb");
     if(file) {
         Elf32_Ehdr header11;
         ctr_load_header(&header11, file);
         if(!ctr_check_elf(&header11)) {
-
-            printf("ERROR! this is not a valid ELF!\n");
+            printf("This isn't a valid ELF!\n");
+            for(;;);
         } else {
             ctr_load_segments(&header11,file);
+            printf("Kernel11 loaded\n");
+            ctr_cache_drain_write_buffer();
+            ctr_cache_clean_and_flush_all();
+            printf("Starting kernel11...\n");
             *((uint32_t*)0x1FFFFFF8)=(uint32_t)(header11.e_entry);
         }
         fclose(file);
@@ -199,6 +203,7 @@ int main()
     }
     ctr_cache_drain_write_buffer();
     ctr_cache_clean_and_flush_all();
+    printf("Starting kernel9...\n");
     ((void(*)(uint32_t,multiboot_info_t*))(header.e_entry))(0x2BADB002,&mb_info);
     ctr_system_poweroff();
 	return 0;
